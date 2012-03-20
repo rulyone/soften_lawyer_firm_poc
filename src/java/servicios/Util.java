@@ -253,11 +253,18 @@ public class Util implements Serializable {
         return abonos;
     }
     
-    public static Date parsearFechaPagosWeb(String fecha) {
+    public static Date parsearFechaPagosWeb(String fecha) throws BusinessLogicException {
         //formato DDMMYYYY
-        int dia = Integer.parseInt(fecha.substring(0,2));
-        int mes = Integer.parseInt(fecha.substring(2,4));
-        int anio = Integer.parseInt(fecha.substring(4,8));
+        int dia = 0;
+        int mes = 0;
+        int anio = 0;
+        try {
+            dia = Integer.parseInt(fecha.substring(0,2));
+            mes = Integer.parseInt(fecha.substring(2,4));
+            anio = Integer.parseInt(fecha.substring(4,8));
+        } catch (NumberFormatException ex) {
+            throw new BusinessLogicException("Error al intentar traducir la fecha en los pagos web.");
+        }
         return new GregorianCalendar(anio,mes,dia).getTime();
     }
     
@@ -305,6 +312,9 @@ public class Util implements Serializable {
             
             PdfPTable table = new PdfPTable(new float[]{10f, 30f});
             table.getDefaultCell().setBorder(Rectangle.NO_BORDER); 
+            
+            table.addCell(new Phrase("FOLIO:", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10f)));
+            table.addCell(new Phrase(String.valueOf(abono.getId())));
             
             table.addCell(new Phrase("FECHA:", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10f)));
             table.addCell(new Phrase(fecha, FontFactory.getFont(FontFactory.HELVETICA, 10f)));
@@ -391,6 +401,9 @@ public class Util implements Serializable {
             
             table = new PdfPTable(new float[]{10f, 30f});
             table.getDefaultCell().setBorder(Rectangle.NO_BORDER); 
+            
+            table.addCell(new Phrase("FOLIO:", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10f)));
+            table.addCell(new Phrase(String.valueOf(abono.getId())));
             
             table.addCell(new Phrase("FECHA:", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10f)));
             table.addCell(new Phrase(fecha, FontFactory.getFont(FontFactory.HELVETICA, 10f)));

@@ -16,7 +16,8 @@ import servicios.Util;
 public class Main {
     
     public static void main(String[] args) {
-        System.out.println(new BigInteger("0002"));
+        String pass = Util.hashPassword("mundo");
+        System.out.println(pass);
     }
     
 }

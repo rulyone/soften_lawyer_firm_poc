@@ -12,1036 +12,1042 @@
         <ui:composition template="/TEMPLATE.xhtml">
 
             <ui:define name="content">
-                <ror:notifyMessages id="notificaciones" sticky="true" showDetail="true" />
-                
-                <h:form>
-                    
-                    <ror:toolbar>
-                        <ror:toolbarGroup rendered="#{ror:isUserInRole('ADMIN')}" >
-                            
-                            <h:commandButton value="Crear Usuario" style="background-color: #{a4jSkin.generalBackgroundColor};">
-                                <ror:componentControl target="crear_usuario" operation="show" />
-                            </h:commandButton>
-                            
-                            <h:commandButton value="Ingresar Demandas" style="background-color: #{a4jSkin.generalBackgroundColor};">
-                                <ror:componentControl target="ingresar_demandas" operation="show" />
-                            </h:commandButton>
-                            
-                            <h:commandButton value="Ingresar Pagos Web" style="background-color: #{a4jSkin.generalBackgroundColor};">
-                                <ror:componentControl target="ingresar_pagos_web" operation="show" />
-                            </h:commandButton>
-                            
-                            <h:commandButton value="Administrar Usuarios" style="background-color: #{a4jSkin.generalBackgroundColor};">
-                                <ror:componentControl target="administrar_usuarios" operation="show" />
-                            </h:commandButton>
-                        </ror:toolbarGroup>
-                        <ror:toolbarGroup location="right">
-                            <h:outputText value="Logeado como: #{loginMB.rut}" />
-                            <h:commandButton value="Logout" action="#{loginMB.logout}" style="background-color: #{a4jSkin.generalBackgroundColor};" />
-                        </ror:toolbarGroup>
-                    </ror:toolbar>
-                </h:form>
-                
-                <h:form>
-                    <ror:popupPanel domElementAttachment="form" id="crear_usuario" autosized="true" resizeable="false" modal="true">
-                        <f:facet name="header">Crear Usuario</f:facet>
-                        <f:facet name="controls">
-                            <h:outputLink value="#" onclick="#{ror:component('crear_usuario')}.hide(); return false;">
-                                Cerrar
-                            </h:outputLink>
-                        </f:facet>
-                        <h:panelGrid columns="2">
-                            <h:outputText value="Nombre Completo" style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.nombreCompleto}" />
-                            
-                            <h:outputText value="RUT: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.rut}" />
-                            
-                            <h:outputText value="PASSWORD: " style="font-weight: bold;" />
-                            <h:inputSecret value="#{demandasMB.password}" />
-                            
-                            <h:outputText value="ROL: " style="font-weight: bold;" />
-                            <ror:select value="#{demandasMB.rol}" required="true" >
-                                <f:selectItem itemLabel="NORMAL" itemValue="NORMAL" />
-                                <f:selectItem itemLabel="ADMIN" itemValue="ADMIN" />
-                            </ror:select>
-                            
-                        </h:panelGrid>
-                        
-                        <h:commandButton value="Crear usuario" actionListener="#{demandasMB.crearUsuario}" />
-                        
-                        <roa:commandButton value="Cancelar" onclick="#{ror:component('crear_usuario')}.hide(); return false;" />
-                        
-                    </ror:popupPanel>
-                </h:form>
-                
-                
-                <h:form>
-                    <ror:popupPanel domElementAttachment="form" id="ingresar_pagos_web" autosized="true" resizeable="false" modal="true">
-                        <f:facet name="header">Ingresar PAGOS WEB</f:facet>
-                        <f:facet name="controls">
-                            <h:outputLink value="#" onclick="#{ror:component('ingresar_pagos_web')}.hide(); return false;">
-                                Cerrar
-                            </h:outputLink>
-                        </f:facet>
-                        <h:outputText value="Pegar datos de los pagos WEB: " />
-                        <h:inputTextarea cols="150" rows="25" value="#{demandasMB.pagosWeb}" />
+                <h:panelGroup rendered="#{!(ror:isUserInRole('ADMIN') or ror:isUserInRole('NORMAL'))}">
+                    No estás logeado, click <h:link outcome="/index.xhtml" value="aquí" /> para introducir tus credenciales de acceso.
+                </h:panelGroup>
+                <h:panelGroup rendered="#{(ror:isUserInRole('ADMIN') or ror:isUserInRole('NORMAL'))}">
 
-                        <h:commandButton value="Ingresar!" action="#{demandasMB.ingresarPagosWeb}">
-                        </h:commandButton>
-                    </ror:popupPanel>
-                    <roa:status>
-                        <f:facet name="start">
-                            <h:graphicImage value="/images/ai.gif" alt="ai" />
-                        </f:facet>
-                    </roa:status>
-                </h:form>
+                    <ror:notifyMessages id="notificaciones" sticky="true" showDetail="true" />
 
-                <h:form>
-                    <ror:popupPanel domElementAttachment="form" id="ingresar_demandas" autosized="true" resizeable="false" modal="true">
-                        <f:facet name="header">Ingresar Demandas</f:facet>
-                        <f:facet name="controls">
-                            <h:outputLink value="#" onclick="#{ror:component('ingresar_demandas')}.hide(); return false;">
-                                Cerrar
-                            </h:outputLink>
-                        </f:facet>
-                        <h:outputText value="Pegar datos en formato CSV: " />
-                        <h:inputTextarea cols="150" rows="25" value="#{demandasMB.datosCSV}" />
+                    <h:form>
 
-                        <h:commandButton value="Ingresar!" action="#{demandasMB.ingresarDatosCSV}">
-                        </h:commandButton>
-                    </ror:popupPanel>
-                    <roa:status>
-                        <f:facet name="start">
-                            <h:graphicImage value="/images/ai.gif" alt="ai" />
-                        </f:facet>
-                    </roa:status>
-                </h:form>
-                
-                <h:form>
-                    <ror:popupPanel domElementAttachment="form" id="administrar_usuarios" autosized="true" resizeable="false" modal="true">
-                        <f:facet name="header">Administrar Usuarios</f:facet>
-                        <f:facet name="controls">
-                            <h:outputLink value="#" onclick="#{ror:component('administrar_usuarios')}.hide(); return false;">
-                                Cerrar
-                            </h:outputLink>
-                        </f:facet>
-                        <ror:dataTable value="#{demandasMB.usuarios}" var="usuario">
-                            <ror:column>
-                                <f:facet name="header">RUT</f:facet>
-                                <h:outputText value="#{usuario.rut}" />
-                            </ror:column>
-                            <ror:column>
-                                <f:facet name="header">NOMBRE</f:facet>
-                                <h:outputText value="#{usuario.nombreCompleto}" />
-                            </ror:column>
-                            <ror:column>
-                                <f:facet name="header">Fecha Creación</f:facet>
-                                <h:outputText value="#{usuario.fechaCreacion}" >
-                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
-                                </h:outputText>
-                            </ror:column>
-                            <ror:column>
-                                <f:facet name="header">Fecha Ult. Acceso</f:facet>
-                                <h:outputText value="#{usuario.fechaUltimoAcceso}" >
-                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
-                                </h:outputText>
-                            </ror:column>
-                            <ror:column>
-                                <f:facet name="header">ROL</f:facet>
-                                <h:outputText value="#{usuario.rol}" />
-                            </ror:column>
-                            <ror:column>
-                                <f:facet name="header">¿Bloqueado?</f:facet>
-                                <h:outputText value="#{usuario.bloqueado? 'Si':'No'}" />
-                            </ror:column>
-                            <ror:column >
-                                <f:facet name="header"></f:facet>
-                                <h:commandLink rendered="#{!usuario.bloqueado and !(usuario.rol eq 'ADMIN')}" value="BLOQUEAR USUARIO" action="#{demandasMB.bloquearUsuario(usuario.rut)}" styleClass="no-decor">
-                                </h:commandLink>
-                                <roa:commandLink rendered="#{usuario.bloqueado and !(usuario.rol eq 'ADMIN')}" value="DESBLOQUEAR USUARIO" action="#{demandasMB.desbloquearUsuario(usuario.rut)}" styleClass="no-decor" render="@all" execute="@this">
-                                </roa:commandLink>
-                            </ror:column>                            
-                        </ror:dataTable>
-                    </ror:popupPanel>
-                </h:form>
-                
-                <h:form>
-                    <ror:popupPanel domElementAttachment="form" id="detalle_pagos" autosized="true" resizeable="false" modal="true">
-                        <f:facet name="header">Detalles Abonos</f:facet>
-                        <f:facet name="controls">
-                            <h:outputLink value="#" onclick="#{ror:component('detalle_pagos')}.hide(); return false;">
-                                Cerrar
-                            </h:outputLink>
-                        </f:facet>
-                        
-                        <h:outputText value="Esta demanda no tiene programaciones realizadas." rendered="#{demandasMB.demandaDetalles.programaciones.isEmpty()}" />
-                        
-                        <roa:repeat value="#{demandasMB.demandaDetalles.programaciones}" var="programacion" iterationStatusVar="it" >
-                            
-                            <h:outputText value="Programación ##{it.index + 1}" />
-                            
-                            <ror:dataTable value="#{programacion.abonos}" var="abono">
-                                <f:facet name="header">
-                                    <ror:columnGroup>
-                                        <ror:column colspan="6">
-                                            <h:outputText value="Detalle de pagos de abonos" />
-                                        </ror:column>
-                                        <ror:column breakRowBefore="true">
-                                            <h:outputText value="Imprimir Comprobante" />
-                                        </ror:column>
-                                        <ror:column>
-                                            <h:outputText value="Monto sin dscto." />
-                                        </ror:column>
-                                        <ror:column>
-                                            <h:outputText value="Descuento aplicado" />
-                                        </ror:column>
-                                        <ror:column>
-                                            <h:outputText value="Monto pagado con dscto." />
-                                        </ror:column>
-                                        <ror:column>
-                                            <h:outputText value="Fecha" />
-                                        </ror:column>
-                                        <ror:column>
-                                            <h:outputText value="Responsable" />
-                                        </ror:column>
-                                    </ror:columnGroup>
-                                </f:facet>
+                        <ror:toolbar>
+                            <ror:toolbarGroup rendered="#{ror:isUserInRole('ADMIN')}" >
+
+                                <h:commandButton value="Crear Usuario" style="background-color: #{a4jSkin.generalBackgroundColor};">
+                                    <ror:componentControl target="crear_usuario" operation="show" />
+                                </h:commandButton>
+
+                                <h:commandButton value="Ingresar Demandas" style="background-color: #{a4jSkin.generalBackgroundColor};">
+                                    <ror:componentControl target="ingresar_demandas" operation="show" />
+                                </h:commandButton>
+
+                                <h:commandButton value="Ingresar Pagos Web" style="background-color: #{a4jSkin.generalBackgroundColor};">
+                                    <ror:componentControl target="ingresar_pagos_web" operation="show" />
+                                </h:commandButton>
+
+                                <h:commandButton value="Administrar Usuarios" style="background-color: #{a4jSkin.generalBackgroundColor};">
+                                    <ror:componentControl target="administrar_usuarios" operation="show" />
+                                </h:commandButton>
+                            </ror:toolbarGroup>
+                            <ror:toolbarGroup location="right">
+                                <h:outputText value="Logeado como: #{loginMB.rut}" />
+                                <h:commandButton value="Logout" action="#{loginMB.logout}" style="background-color: #{a4jSkin.generalBackgroundColor};" />
+                            </ror:toolbarGroup>
+                        </ror:toolbar>
+                    </h:form>
+
+                    <h:form>
+                        <ror:popupPanel domElementAttachment="form" id="crear_usuario" autosized="true" resizeable="false" modal="true">
+                            <f:facet name="header">Crear Usuario</f:facet>
+                            <f:facet name="controls">
+                                <h:outputLink value="#" onclick="#{ror:component('crear_usuario')}.hide(); return false;">
+                                    Cerrar
+                                </h:outputLink>
+                            </f:facet>
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Nombre Completo" style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.nombreCompleto}" />
+
+                                <h:outputText value="RUT: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.rut}" />
+
+                                <h:outputText value="PASSWORD: " style="font-weight: bold;" />
+                                <h:inputSecret value="#{demandasMB.password}" />
+
+                                <h:outputText value="ROL: " style="font-weight: bold;" />
+                                <ror:select value="#{demandasMB.rol}" required="true" >
+                                    <f:selectItem itemLabel="NORMAL" itemValue="NORMAL" />
+                                    <f:selectItem itemLabel="ADMIN" itemValue="ADMIN" />
+                                </ror:select>
+
+                            </h:panelGrid>
+
+                            <h:commandButton value="Crear usuario" actionListener="#{demandasMB.crearUsuario}" />
+
+                            <roa:commandButton value="Cancelar" onclick="#{ror:component('crear_usuario')}.hide(); return false;" />
+
+                        </ror:popupPanel>
+                    </h:form>
+
+
+                    <h:form>
+                        <ror:popupPanel domElementAttachment="form" id="ingresar_pagos_web" autosized="true" resizeable="false" modal="true">
+                            <f:facet name="header">Ingresar PAGOS WEB</f:facet>
+                            <f:facet name="controls">
+                                <h:outputLink value="#" onclick="#{ror:component('ingresar_pagos_web')}.hide(); return false;">
+                                    Cerrar
+                                </h:outputLink>
+                            </f:facet>
+                            <h:outputText value="Pegar datos de los pagos WEB: " />
+                            <h:inputTextarea cols="150" rows="25" value="#{demandasMB.pagosWeb}" />
+
+                            <h:commandButton value="Ingresar!" action="#{demandasMB.ingresarPagosWeb}">
+                            </h:commandButton>
+                        </ror:popupPanel>
+                        <roa:status>
+                            <f:facet name="start">
+                                <h:graphicImage value="/images/ai.gif" alt="ai" />
+                            </f:facet>
+                        </roa:status>
+                    </h:form>
+
+                    <h:form>
+                        <ror:popupPanel domElementAttachment="form" id="ingresar_demandas" autosized="true" resizeable="false" modal="true">
+                            <f:facet name="header">Ingresar Demandas</f:facet>
+                            <f:facet name="controls">
+                                <h:outputLink value="#" onclick="#{ror:component('ingresar_demandas')}.hide(); return false;">
+                                    Cerrar
+                                </h:outputLink>
+                            </f:facet>
+                            <h:outputText value="Pegar datos en formato CSV: " />
+                            <h:inputTextarea cols="150" rows="25" value="#{demandasMB.datosCSV}" />
+
+                            <h:commandButton value="Ingresar!" action="#{demandasMB.ingresarDatosCSV}">
+                            </h:commandButton>
+                        </ror:popupPanel>
+                        <roa:status>
+                            <f:facet name="start">
+                                <h:graphicImage value="/images/ai.gif" alt="ai" />
+                            </f:facet>
+                        </roa:status>
+                    </h:form>
+
+                    <h:form>
+                        <ror:popupPanel domElementAttachment="form" id="administrar_usuarios" autosized="true" resizeable="false" modal="true">
+                            <f:facet name="header">Administrar Usuarios</f:facet>
+                            <f:facet name="controls">
+                                <h:outputLink value="#" onclick="#{ror:component('administrar_usuarios')}.hide(); return false;">
+                                    Cerrar
+                                </h:outputLink>
+                            </f:facet>
+                            <ror:dataTable value="#{demandasMB.usuarios}" var="usuario">
                                 <ror:column>
-                                    <h:commandLink value="Imprimir Comprobante" action="#{demandasMB.imprimirComprobante(abono)}" />
+                                    <f:facet name="header">RUT</f:facet>
+                                    <h:outputText value="#{usuario.rut}" />
                                 </ror:column>
                                 <ror:column>
-                                    <h:outputText value="#{abono.montoSinDescuento}" >
-                                        <f:convertNumber currencyCode="CLP" />
-                                    </h:outputText>
+                                    <f:facet name="header">NOMBRE</f:facet>
+                                    <h:outputText value="#{usuario.nombreCompleto}" />
                                 </ror:column>
                                 <ror:column>
-                                    <h:outputText value="#{abono.descuentoAplicado}" >
-                                        <f:convertNumber currencyCode="CLP" />
-                                    </h:outputText>
-                                </ror:column>
-                                <ror:column>
-                                    <h:outputText value="#{abono.montoPagado}" >
-                                        <f:convertNumber currencyCode="CLP" />
-                                    </h:outputText>
-                                </ror:column>
-                                <ror:column>
-                                    <h:outputText value="#{abono.fecha}" >
+                                    <f:facet name="header">Fecha Creación</f:facet>
+                                    <h:outputText value="#{usuario.fechaCreacion}" >
                                         <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
                                     </h:outputText>
                                 </ror:column>
                                 <ror:column>
-                                    <h:outputText value="#{abono.responsable}" />
+                                    <f:facet name="header">Fecha Ult. Acceso</f:facet>
+                                    <h:outputText value="#{usuario.fechaUltimoAcceso}" >
+                                        <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
+                                    </h:outputText>
                                 </ror:column>
+                                <ror:column>
+                                    <f:facet name="header">ROL</f:facet>
+                                    <h:outputText value="#{usuario.rol}" />
+                                </ror:column>
+                                <ror:column>
+                                    <f:facet name="header">¿Bloqueado?</f:facet>
+                                    <h:outputText value="#{usuario.bloqueado? 'Si':'No'}" />
+                                </ror:column>
+                                <ror:column >
+                                    <f:facet name="header"></f:facet>
+                                    <h:commandLink rendered="#{!usuario.bloqueado and !(usuario.rol eq 'ADMIN')}" value="BLOQUEAR USUARIO" action="#{demandasMB.bloquearUsuario(usuario.rut)}" styleClass="no-decor">
+                                    </h:commandLink>
+                                    <roa:commandLink rendered="#{usuario.bloqueado and !(usuario.rol eq 'ADMIN')}" value="DESBLOQUEAR USUARIO" action="#{demandasMB.desbloquearUsuario(usuario.rut)}" styleClass="no-decor" render="@all" execute="@this">
+                                    </roa:commandLink>
+                                </ror:column>                            
                             </ror:dataTable>
-                        </roa:repeat>
-                        
-                    </ror:popupPanel>
-                </h:form>
-                
-                <h:form>
-                    <ror:popupPanel domElementAttachment="form" id="pagar_abono" autosized="true" resizeable="false" modal="true">
-                        <f:facet name="header">Pagar Abono</f:facet>
-                        <f:facet name="controls">
-                            <h:outputLink value="#" onclick="#{ror:component('pagar_abono')}.hide(); return false;">
-                                Cerrar
-                            </h:outputLink>
-                        </f:facet>
-                        <h:panelGrid columns="2">                           
-                            
-                            <h:outputText value="Deuda total: " />
-                            <h:outputText value="#{demandasMB.demandaPagoAbono.ultimaProgramacion.totalAPagar}">
-                                <f:convertNumber currencyCode="CLP" />
-                            </h:outputText>
-                            
-                            <h:outputText value="Total abonos pagados: " />
-                            <h:outputText value="#{demandasMB.demandaPagoAbono.totalPagado}">
-                                <f:convertNumber currencyCode="CLP" />
-                            </h:outputText>
-                            
-                            <h:outputText value="Saldo: " style="font-weight:bold;" />
-                            <h:outputText value="#{demandasMB.demandaPagoAbono.ultimaProgramacion.totalAPagar - demandasMB.demandaPagoAbono.totalPagado}" style="font-weight:bold;">
-                                <f:convertNumber currencyCode="CLP" />
-                            </h:outputText>
-                            
-                            <h:outputText value="Monto del Abono según programación: " />
-                            <h:outputText value="#{demandasMB.demandaPagoAbono.ultimaProgramacion.montoPorAbono}" >
-                                <f:convertNumber currencyCode="CLP" />
-                            </h:outputText>
-                            
-                            <h:outputText value="Monto del último Abono según programación: " />
-                            <h:outputText value="#{demandasMB.demandaPagoAbono.ultimaProgramacion.montoUltimoAbono}" >
-                                <f:convertNumber currencyCode="CLP" />
-                            </h:outputText>
-                            
-                            <h:outputText value="Costas: " />
-                            <h:outputText value="#{demandasMB.demandaPagoAbono.costas}" >
-                                <f:convertNumber currencyCode="CLP" />
-                            </h:outputText>
-                            
-                            <h:outputText value="Monto a pagar del Abono: " />
-                            <h:inputText value="#{demandasMB.montoSinDescuento}" >
-                                <f:convertNumber currencyCode="CLP" />
-                                <f:ajax event="keyup" render="total_a_pagar" listener="#{demandasMB.calcularTotalAPagar}" />
-                            </h:inputText>
-                            
-                            <h:outputText value="Descuento según programación: " />
-                            <h:outputText value="#{demandasMB.demandaPagoAbono.ultimaProgramacion.descuentoOfrecido}" >
-                                <f:convertNumber currencyCode="CLP" />
-                            </h:outputText>
-                            
-                            <h:outputText value="Descuento a aplicar: " />
-                            <ror:select defaultLabel="0%" value="#{demandasMB.descuentoAplicado}">
-                                <f:ajax event="selectitem" render="total_a_pagar" listener="#{demandasMB.calcularTotalAPagar}" />
-                                <f:selectItem itemLabel="0%" itemValue="0.00" />
-                                <f:selectItem itemLabel="1%" itemValue="0.01" />
-                                <f:selectItem itemLabel="2%" itemValue="0.02" />
-                                <f:selectItem itemLabel="3%" itemValue="0.03" />
-                                <f:selectItem itemLabel="4%" itemValue="0.04" />
-                                <f:selectItem itemLabel="5%" itemValue="0.05" />
-                                <f:selectItem itemLabel="6%" itemValue="0.06" />
-                                <f:selectItem itemLabel="7%" itemValue="0.07" />
-                                <f:selectItem itemLabel="8%" itemValue="0.08" />
-                                <f:selectItem itemLabel="9%" itemValue="0.09" />
-                                <f:selectItem itemLabel="10%" itemValue="0.10" />
-                            </ror:select>
-                            
-                            <h:outputText value="Total a pagar: " />
-                            <h:outputText id="total_a_pagar" value="#{demandasMB.montoPagado}" >
-                                <f:convertNumber currencyCode="CLP" />
-                            </h:outputText>
-                        </h:panelGrid>
-                             
-                        <h:commandButton value="Confirmar Pago" action="#{demandasMB.confirmarPagoAbono}" />
-                        
-                        <h:commandButton value="Anular" action="#{demandasMB.anularPago}">
-                            <f:ajax execute="@this" />
-                            <ror:componentControl target="pagar_abono" operation="hide" />
-                        </h:commandButton>
-                        
-                    </ror:popupPanel>
-                </h:form>
+                        </ror:popupPanel>
+                    </h:form>
 
-                <h:form>
-                    <h:outputLabel value="Buscar por " />
-                    <h:selectOneMenu value="#{demandasMB.filtrarPorRut}">
-                        <f:selectItem itemValue="true" itemLabel="RUT" />
-                        <f:selectItem itemValue="false" itemLabel="NOMBRE" />
-                    </h:selectOneMenu>
-                    <h:inputText value="#{demandasMB.filtro}" />
-                    <h:commandButton value="BUSCAR!" actionListener="#{demandasMB.buscar}">
-                        <f:ajax execute="@form" render=":form_demandas" />
-                    </h:commandButton>
-                    <roa:status>
-                        <f:facet name="start">
-                            <h:graphicImage library="images" name="ai.gif" alt="ai" height="20px;" />
-                        </f:facet>
-                    </roa:status>
-                </h:form>
+                    <h:form>
+                        <ror:popupPanel domElementAttachment="form" id="detalle_pagos" autosized="true" resizeable="false" modal="true">
+                            <f:facet name="header">Detalles Abonos</f:facet>
+                            <f:facet name="controls">
+                                <h:outputLink value="#" onclick="#{ror:component('detalle_pagos')}.hide(); return false;">
+                                    Cerrar
+                                </h:outputLink>
+                            </f:facet>
 
-                <h:form>
-                    <ror:select value="#{demandasMB.vistaTabla}" >
-                        <f:ajax event="selectitem" render=":form_demandas" />
-                        <f:selectItem itemLabel="FULL" itemValue="1" />
-                        <f:selectItem itemLabel="Datos Administrativos" itemValue="2" />
-                        <f:selectItem itemLabel="Datos Judiciales" itemValue="3" />
-                    </ror:select>
-                    <roa:status>
-                        <f:facet name="start">
-                            <h:graphicImage library="images" name="ai.gif" alt="ai" height="20px;" />
-                        </f:facet>
-                    </roa:status>
-                </h:form>
-                
-                <h:form>
-                    <ror:popupPanel domElementAttachment="form" id="editar_costas" autosized="true" resizeable="false" modal="true">
-                        <f:facet name="header">Editar Costas</f:facet>
-                        <f:facet name="controls">
-                            <h:outputLink value="#" onclick="#{ror:component('editar_costas')}.hide(); return false;">
-                                Cerrar
-                            </h:outputLink>
-                        </f:facet>
-                        <h:panelGrid columns="2">
-                            
-                            <h:outputText value="Rut:  " style="font-weight: bold;" />
-                            <h:outputText value="#{demandasMB.demandaEditableCostas.rut}" />                            
-                            
-                            <h:outputText value="Costas: " style="font-weight: bold;"/>
-                            <h:inputText value="#{demandasMB.demandaEditableCostas.costas}" />
-                        </h:panelGrid>
-                        
-                        <h:commandButton value="Editar Costas" actionListener="#{demandasMB.editarCostas}" />
-                        
-                        <roa:commandButton value="Cancelar" onclick="#{ror:component('editar_costas')}.hide(); return false;" />
-                        
-                    </ror:popupPanel>
-                </h:form>
-                
-                <h:form>
-                    <ror:popupPanel domElementAttachment="form" id="programar_abonos" autosized="true" resizeable="false" modal="true">
-                        <f:facet name="header">Programación Abonos</f:facet>
-                        <f:facet name="controls">
-                            <h:outputLink value="#" onclick="#{ror:component('programar_abonos')}.hide(); return false;">
-                                Cerrar
-                            </h:outputLink>
-                        </f:facet>
-                        <h:panelGrid columns="2">
-                            
-                            <h:outputText value="Rut:  " style="font-weight: bold;" />
-                            <h:outputText value="#{demandasMB.demandaProgramacion.rut}" />
-                            
-                            <h:outputText value="Capital: " style="font-weight: bold;" />
-                            <h:outputText value="#{demandasMB.demandaProgramacion.capital}" >
-                                <f:convertNumber currencyCode="CLP" />
-                            </h:outputText>
-                            
-                            <h:outputText value="Capital Pagaré:  " style="font-weight: bold;" />
-                            <h:outputText value="#{demandasMB.demandaProgramacion.capitalPagare}" >
-                                <f:convertNumber currencyCode="CLP" />
-                            </h:outputText>
-                            
-                            <h:outputText value="Número de abonos: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.numeroDeAbonos}" />
-                            
-                            <h:outputText value="Utilizar Capital Pagaré?: " style="font-weight: bold;" />
-                            <ror:select value="#{demandasMB.utilizarCapitalPagare}" required="true">
-                                <f:selectItem itemLabel="Si" itemValue="true" />
-                                <f:selectItem itemLabel="No (utilizar sólo el Capital)" itemValue="false" />
-                            </ror:select>
-                            
-                            <h:outputText value="Interés: " style="font-weight: bold;" />
-                            <ror:select value="#{demandasMB.interes}" required="true" >
-                                <f:selectItem itemLabel="2.0%" itemValue="0.020" />
-                                <f:selectItem itemLabel="2.5%" itemValue="0.025" />
-                                <f:selectItem itemLabel="3.0%" itemValue="0.030" />
-                            </ror:select>
-                            
-                            <h:outputText value="Descuento Ofrecido: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.descuentoOfrecido}" required="true" />
-                            
-                            <h:outputText value="Costas: " style="font-weight: bold;"/>
-                            <h:outputText value="#{demandasMB.demandaProgramacion.costas}" />
-                        </h:panelGrid>
-                        
-                        <h:commandButton value="Programar Abonos" actionListener="#{demandasMB.programarAbonos}" />
-                        
-                        <roa:commandButton value="Cancelar" onclick="#{ror:component('programar_abonos')}.hide(); return false;" />
-                        
-                    </ror:popupPanel>
-                </h:form>
-                
-                <h:form>
-                    <ror:popupPanel domElementAttachment="form" id="reprogramar_abonos" autosized="true" resizeable="false" modal="true">
-                        <f:facet name="header">ReProgramación Abonos</f:facet>
-                        <f:facet name="controls">
-                            <h:outputLink value="#" onclick="#{ror:component('reprogramar_abonos')}.hide(); return false;">
-                                Cerrar
-                            </h:outputLink>
-                        </f:facet>
-                        <h:panelGrid id="grilla" columns="2">
-                            
-                            <h:outputText value="Rut:  " style="font-weight: bold;" />
-                            <h:outputText value="#{demandasMB.demandaReprogramacion.rut}" />
-                            
-                            <h:outputText value="Capital: " style="font-weight: bold;" />
-                            <h:outputText value="#{demandasMB.demandaReprogramacion.capital}" >
-                                <f:convertNumber currencyCode="CLP" />
-                            </h:outputText>
-                            
-                            <h:outputText value="Capital Pagaré:  " style="font-weight: bold;" />
-                            <h:outputText value="#{demandasMB.demandaReprogramacion.capitalPagare}" >
-                                <f:convertNumber currencyCode="CLP" />
-                            </h:outputText>
-                            
-                            <h:outputText value="Número de abonos: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.numeroDeAbonos}" />
-                            
-                            <h:outputText value="RECALCULAR TOTAL A PAGAR? " />
-                            <h:selectBooleanCheckbox value="#{demandasMB.recalcularTotalAPagar}">
-                                <f:ajax render="grilla" />
-                            </h:selectBooleanCheckbox>
-                            
-                            <h:outputText rendered="#{demandasMB.recalcularTotalAPagar}" value="Utilizar Capital Pagaré?: " style="font-weight: bold;" />
-                            <ror:select rendered="#{demandasMB.recalcularTotalAPagar}" value="#{demandasMB.utilizarCapitalPagare}">
-                                <f:selectItem itemLabel="Si" itemValue="true" />
-                                <f:selectItem itemLabel="No (utilizar sólo el Capital)" itemValue="false" />
-                            </ror:select>
-                            
-                            <h:outputText rendered="#{demandasMB.recalcularTotalAPagar}" value="Interés: " style="font-weight: bold;" />
-                            <ror:select rendered="#{demandasMB.recalcularTotalAPagar}" value="#{demandasMB.interes}" required="true" >
-                                <f:selectItem itemLabel="2.0%" itemValue="0.020" />
-                                <f:selectItem itemLabel="2.5%" itemValue="0.025" />
-                                <f:selectItem itemLabel="3.0%" itemValue="0.030" />
-                            </ror:select>
-                            
-                            <h:outputText value="Descuento Ofrecido: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.descuentoOfrecido}" required="true" />
-                            
-                            <h:outputText value="Costas: " style="font-weight: bold;"/>
-                            <h:outputText value="#{demandasMB.demandaReprogramacion.costas}" />
-                        </h:panelGrid>
-                        
-                        <h:commandButton value="Reprogramar Abonos" actionListener="#{demandasMB.reprogramarAbonos}" />
-                        
-                        <roa:commandButton value="Cancelar" onclick="#{ror:component('reprogramar_abonos')}.hide(); return false;" />
-                        
-                    </ror:popupPanel>
-                </h:form>
-                
-                <h:form>
-                    <ror:popupPanel domElementAttachment="form" id="editar_demanda"  autosized="true" resizeable="false" modal="true">
-                        <f:facet name="header">Editar Datos Judiciales</f:facet>
-                        <f:facet name="controls">
-                            <h:outputLink value="#" onclick="#{ror:component('editar_demanda')}.hide(); return false;">
-                                Cerrar
-                            </h:outputLink>
-                        </f:facet>
-                        <h:panelGrid columns="2">
-                            <h:outputText value="Tribunal: " style="font-weight: bold;" />
-                            <ror:select value="#{demandasMB.demandaEditable.tribunal}" >
-                                <f:selectItem itemLabel="1° Santiago" itemValue="1° Santiago" />
-                                <f:selectItem itemLabel="2° Santiago" itemValue="2° Santiago" />
-                                <f:selectItem itemLabel="3° Santiago" itemValue="3° Santiago" />
-                                <f:selectItem itemLabel="4° Santiago" itemValue="4° Santiago" />
-                                <f:selectItem itemLabel="5° Santiago" itemValue="5° Santiago" />
-                                <f:selectItem itemLabel="6° Santiago" itemValue="6° Santiago" />
-                                <f:selectItem itemLabel="7° Santiago" itemValue="7° Santiago" />
-                                <f:selectItem itemLabel="8° Santiago" itemValue="8° Santiago" />
-                                <f:selectItem itemLabel="9° Santiago" itemValue="9° Santiago" />
-                                <f:selectItem itemLabel="10° Santiago" itemValue="10° Santiago" />
-                                <f:selectItem itemLabel="11° Santiago" itemValue="11° Santiago" />
-                                <f:selectItem itemLabel="12° Santiago" itemValue="12° Santiago" />
-                                <f:selectItem itemLabel="13° Santiago" itemValue="13° Santiago" />
-                                <f:selectItem itemLabel="14° Santiago" itemValue="14° Santiago" />
-                                <f:selectItem itemLabel="15° Santiago" itemValue="15° Santiago" />
-                                <f:selectItem itemLabel="16° Santiago" itemValue="16° Santiago" />
-                                <f:selectItem itemLabel="17° Santiago" itemValue="17° Santiago" />
-                                <f:selectItem itemLabel="18° Santiago" itemValue="18° Santiago" />
-                                <f:selectItem itemLabel="19° Santiago" itemValue="19° Santiago" />
-                                <f:selectItem itemLabel="20° Santiago" itemValue="20° Santiago" />
-                                <f:selectItem itemLabel="21° Santiago" itemValue="21° Santiago" />
-                                <f:selectItem itemLabel="22° Santiago" itemValue="22° Santiago" />
-                                <f:selectItem itemLabel="23° Santiago" itemValue="23° Santiago" />
-                                <f:selectItem itemLabel="24° Santiago" itemValue="24° Santiago" />
-                                <f:selectItem itemLabel="25° Santiago" itemValue="25° Santiago" />
-                                <f:selectItem itemLabel="26° Santiago" itemValue="26° Santiago" />
-                                <f:selectItem itemLabel="27° Santiago" itemValue="27° Santiago" />
-                                <f:selectItem itemLabel="28° Santiago" itemValue="28° Santiago" />
-                                <f:selectItem itemLabel="29° Santiago" itemValue="29° Santiago" />
-                                <f:selectItem itemLabel="30° Santiago" itemValue="30° Santiago" />
-                                <f:selectItem itemLabel="1° Puente Alto" itemValue="1° Puente Alto" />
-                                <f:selectItem itemLabel="1° San Miguel" itemValue="1° San Miguel" />
-                                <f:selectItem itemLabel="2° San Miguel" itemValue="2° San Miguel" />
-                                <f:selectItem itemLabel="3° San Miguel" itemValue="3° San Miguel" />
-                                <f:selectItem itemLabel="4° San Miguel" itemValue="4° San Miguel" />
-                                <f:selectItem itemLabel="1° San Bernardo" itemValue="1° San Bernardo" />
-                                <f:selectItem itemLabel="2° San Bernardo" itemValue="2° San Bernardo" />
-                                <f:selectItem itemLabel="1° Buin" itemValue="1° Buin" />
-                                <f:selectItem itemLabel="2° Buin" itemValue="2° Buin" />
-                                <f:selectItem itemLabel="1° Talagante" itemValue="1° Talagante"  />
-                                <f:selectItem itemLabel="2° Talagante" itemValue="2° Talagante"  />
-                                <f:selectItem itemLabel="1° Colina" itemValue="1° Colina"  />
-                                <f:selectItem itemLabel="1° Peñaflor" itemValue="1° Peñaflor"  />
-                            </ror:select>                       
-                            
-                            <h:outputText value="Rol: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.demandaEditable.rol}" />
-                            
-                            <h:outputText value="Fecha Ingreso Tribunal: " style="font-weight: bold;" />
-                            <ror:calendar value="#{demandasMB.demandaEditable.fechaIngresoTribunal}"  />
-                            
-                            <h:outputText value="Fecha Resolución: " style="font-weight: bold;" />
-                            <ror:calendar value="#{demandasMB.demandaEditable.fechaResolucion}" />
-                            
-                            <h:outputText value="Fecha Mandamiento:" style="font-weight: bold;" />
-                            <ror:calendar value="#{demandasMB.demandaEditable.mandamiento}" />
-                            
-                            <h:outputText value="Receptor: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.demandaEditable.receptor}" />
-                            
-                            <h:outputText value="Notificada: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.demandaEditable.notificada}" />
-                            
-                            <h:outputText value="Observación Notificada: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.demandaEditable.observacionNotificada}" />
-                            
-                            <h:outputText value="Embargo: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.demandaEditable.embargo}" />
-                            
-                            <h:outputText value="Observación Embargo: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.demandaEditable.observacionEmbargo}" />
-                            
-                            <ui:remove>
-                                <h:outputText value="Costas: " style="font-weight: bold;" />
-                                <h:inputText value="#{demandasMB.demandaEditable.costas}">
-                                    <f:validateLongRange minimum="0" />
-                                </h:inputText>
-                            </ui:remove>
-                            
-                        </h:panelGrid>
-                        
-                        <h:commandButton value="Guardar" actionListener="#{demandasMB.editarDemanda}" />
-                        
-                        <roa:commandButton value="Cancelar" onclick="#{ror:component('editar_demanda')}.hide(); return false;" />
-                    </ror:popupPanel>
-                </h:form>
-                
-                <h:form>
-                    <ror:popupPanel domElementAttachment="form" id="editar_demanda2"  autosized="true" resizeable="false" modal="true">
-                        <f:facet name="header">Editar Datos Administrativos</f:facet>
-                        <f:facet name="controls">
-                            <h:outputLink value="#" onclick="#{ror:component('editar_demanda2')}.hide(); return false;">
-                                Cerrar
-                            </h:outputLink>
-                        </f:facet>
-                        <h:panelGrid columns="2">
-                            <h:outputText value="Calle Particular: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.demandaEditable.calleParticular}" />
-                            
-                            <h:outputText value="Depto Particular: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.demandaEditable.departamentoParticular}"  />
-                            
-                            <h:outputText value="Numero Particular: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.demandaEditable.numeroParticular}" />
-                            
-                            <h:outputText value="Comuna Particular:" style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.demandaEditable.comunaParticular}" />
-                            
-                            <h:outputText value="Codigo de Area Particular: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.demandaEditable.codigoAreaParticular}" />
-                            
-                            <h:outputText value="Telefono Particular: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.demandaEditable.telefonoParticular}" />
-                            
-                             <h:outputText value="Calle Comercial: " style="font-weight: bold;" />
-                             <h:inputText value="#{demandasMB.demandaEditable.calleComercial}" />
-                            
-                            <h:outputText value="Depto Comercial: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.demandaEditable.departamentoComercial}"  />
-                            
-                            <h:outputText value="Numero Comercial: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.demandaEditable.numeroComercial}" />
-                            
-                            <h:outputText value="Comuna Comercial:" style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.demandaEditable.comunaComercial}" />
-                            
-                            <h:outputText value="Codigo de Area Comercial: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.demandaEditable.codigoAreaComercial}" />
-                            
-                            <h:outputText value="Telefono Comercial: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.demandaEditable.telefonoComercial}" />
-                            
-                            
-                            <h:outputText value="Celular: " style="font-weight: bold;" />
-                            <h:inputText value="#{demandasMB.demandaEditable.celular}" />
-                            
-                         <h:outputText value="Fecha Demanda Corte: " style="font-weight: bold;" />
-                         <ror:calendar value="#{demandasMB.demandaEditable.fechaDemandaCorte}" />
-                        </h:panelGrid>
-                        
-                        <h:commandButton value="Guardar" actionListener="#{demandasMB.editarDatosAdministrativos}" />
-                        
-                        <roa:commandButton value="Cancelar" onclick="#{ror:component('editar_demanda2')}.hide(); return false;" />
-                    </ror:popupPanel>
-                </h:form>
-                
-                <h:form id="form_demandas">  
-                    <ror:extendedDataTable rendered="#{demandasMB.vistaTabla == 2}" value="#{demandasMB.demandas}" var="demanda" frozenColumns="1" >
-                        <f:facet name="header">
-                            Demandas
-                        </f:facet>
-                        <ror:column>
-                            <f:facet name="header">Rut</f:facet>
-                            <h:outputText value="#{demanda.rut}" />
-                        </ror:column>                                
-                        <ror:column>
-                            <f:facet name="header">Tarjeta</f:facet>
-                            <h:outputText value="#{demanda.numeroTarjeta}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Programación</f:facet>
-                            <roa:commandLink rendered="#{demanda.programaciones.isEmpty()}" render="programar_abonos" execute="@this"
-                                             oncomplete="#{ror:component('programar_abonos')}.show()">                                
-                                <f:setPropertyActionListener target="#{demandasMB.demandaProgramacion}" value="#{demanda}" />
-                                Programar Abonos
-                            </roa:commandLink>
-                            <roa:commandLink rendered="#{!demanda.programaciones.isEmpty()}" render="reprogramar_abonos" execute="@this"
-                                             oncomplete="#{ror:component('reprogramar_abonos')}.show()">                              
-                                <f:setPropertyActionListener target="#{demandasMB.demandaReprogramacion}" value="#{demanda}" />
-                                ReProgramar Abonos
-                            </roa:commandLink>
-                        </ror:column>
-                        <ror:column>
+                            <h:outputText value="Esta demanda no tiene programaciones realizadas." rendered="#{demandasMB.demandaDetalles.programaciones.isEmpty()}" />
+
+                            <roa:repeat value="#{demandasMB.demandaDetalles.programaciones}" var="programacion" iterationStatusVar="it" >
+
+                                <h:outputText value="Programación ##{it.index + 1}" />
+
+                                <ror:dataTable value="#{programacion.abonos}" var="abono">
+                                    <f:facet name="header">
+                                        <ror:columnGroup>
+                                            <ror:column colspan="6">
+                                                <h:outputText value="Detalle de pagos de abonos" />
+                                            </ror:column>
+                                            <ror:column breakRowBefore="true">
+                                                <h:outputText value="Imprimir Comprobante" />
+                                            </ror:column>
+                                            <ror:column>
+                                                <h:outputText value="Monto sin dscto." />
+                                            </ror:column>
+                                            <ror:column>
+                                                <h:outputText value="Descuento aplicado" />
+                                            </ror:column>
+                                            <ror:column>
+                                                <h:outputText value="Monto pagado con dscto." />
+                                            </ror:column>
+                                            <ror:column>
+                                                <h:outputText value="Fecha" />
+                                            </ror:column>
+                                            <ror:column>
+                                                <h:outputText value="Responsable" />
+                                            </ror:column>
+                                        </ror:columnGroup>
+                                    </f:facet>
+                                    <ror:column>
+                                        <h:commandLink value="Imprimir Comprobante" action="#{demandasMB.imprimirComprobante(abono)}" />
+                                    </ror:column>
+                                    <ror:column>
+                                        <h:outputText value="#{abono.montoSinDescuento}" >
+                                            <f:convertNumber currencyCode="CLP" />
+                                        </h:outputText>
+                                    </ror:column>
+                                    <ror:column>
+                                        <h:outputText value="#{abono.descuentoAplicado}" >
+                                            <f:convertNumber currencyCode="CLP" />
+                                        </h:outputText>
+                                    </ror:column>
+                                    <ror:column>
+                                        <h:outputText value="#{abono.montoPagado}" >
+                                            <f:convertNumber currencyCode="CLP" />
+                                        </h:outputText>
+                                    </ror:column>
+                                    <ror:column>
+                                        <h:outputText value="#{abono.fecha}" >
+                                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
+                                        </h:outputText>
+                                    </ror:column>
+                                    <ror:column>
+                                        <h:outputText value="#{abono.responsable}" />
+                                    </ror:column>
+                                </ror:dataTable>
+                            </roa:repeat>
+
+                        </ror:popupPanel>
+                    </h:form>
+
+                    <h:form>
+                        <ror:popupPanel domElementAttachment="form" id="pagar_abono" autosized="true" resizeable="false" modal="true">
                             <f:facet name="header">Pagar Abono</f:facet>
-                            <roa:commandLink render="pagar_abono" execute="@this"
-                                             oncomplete="#{ror:component('pagar_abono')}.show()">
-                                <f:setPropertyActionListener target="#{demandasMB.demandaPagoAbono}" value="#{demanda}" />
-                                Pagar Abono
-                            </roa:commandLink>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Detalle de pagos</f:facet>
-                            <roa:commandLink render="detalle_pagos" execute="@this" oncomplete="#{ror:component('detalle_pagos')}.show()">
-                                <f:setPropertyActionListener target="#{demandasMB.demandaDetalles}" value="#{demanda}" />
-                                Detalle de pagos
-                            </roa:commandLink>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Editar</f:facet>
-                            <roa:commandLink render="editar_demanda2" execute="@this" oncomplete="#{ror:component('editar_demanda2')}.show()">                                
-                                <f:setPropertyActionListener target="#{demandasMB.demandaEditable}" value="#{demanda}" />
-                                Editar Administrativo
-                            </roa:commandLink>
-                        </ror:column>                        
-                        <ror:column>
-                            <f:facet name="header">Nombre</f:facet>
-                            <h:outputText value="#{demanda.nombreCompleto}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Sexo</f:facet>
-                            <h:outputText value="#{demanda.sexo}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Calle Particular</f:facet>
-                            <h:outputText value="#{demanda.calleParticular}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Depto. Particular</f:facet>
-                            <h:outputText value="#{demanda.departamentoParticular}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Número Particular</f:facet>
-                            <h:outputText value="#{demanda.numeroParticular}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Comuna Particular</f:facet>
-                            <h:outputText value="#{demanda.comunaParticular}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Cód. Área Particular</f:facet>
-                            <h:outputText value="#{demanda.codigoAreaParticular}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Fono Particular</f:facet>
-                            <h:outputText value="#{demanda.telefonoParticular}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Calle Comercial</f:facet>
-                            <h:outputText value="#{demanda.calleComercial}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Depto. Comercial</f:facet>
-                            <h:outputText value="#{demanda.departamentoComercial}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Número Comercial</f:facet>
-                            <h:outputText value="#{demanda.numeroComercial}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Comuna Comercial</f:facet>
-                            <h:outputText value="#{demanda.comunaComercial}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Cód. Área Comercial</f:facet>
-                            <h:outputText value="#{demanda.codigoAreaComercial}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Fono Comercial</f:facet>
-                            <h:outputText value="#{demanda.telefonoComercial}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Celular</f:facet>
-                            <h:outputText value="#{demanda.celular}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Capital</f:facet>
-                            <h:outputText value="#{demanda.capital}" >
-                                <f:convertNumber currencyCode="CLP" />
-                            </h:outputText>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Capital Pagaré</f:facet>
-                            <h:outputText value="#{demanda.capitalPagare}" >
-                                <f:convertNumber currencyCode="CLP" />
-                            </h:outputText>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Vencimiento Deuda</f:facet>
-                            <h:outputText value="#{demanda.vencimientoDeuda}">
-                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
-                            </h:outputText>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Vencimiento Pagaré</f:facet>
-                            <h:outputText value="#{demanda.vencimientoPagare}">
-                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
-                            </h:outputText>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Fecha Asignación</f:facet>
-                            <h:outputText value="#{demanda.fechaAsignacion}">
-                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
-                            </h:outputText>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Cód. Abogado</f:facet>
-                            <h:outputText value="#{demanda.codigoAbogado}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Fecha Demanda Corte</f:facet>
-                            <h:outputText value="#{demanda.fechaDemandaCorte}">
-                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
-                            </h:outputText>
-                        </ror:column>
-                    </ror:extendedDataTable>
-                    <ror:extendedDataTable rendered="#{demandasMB.vistaTabla == 3}" value="#{demandasMB.demandas}" var="demanda" frozenColumns="1" >
-                        <f:facet name="header">
-                            Demandas
-                        </f:facet>
-                        <ror:column>
-                            <f:facet name="header">Rut</f:facet>
-                            <h:outputText value="#{demanda.rut}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Editar</f:facet>
-                            <roa:commandLink render="editar_demanda" execute="@this"
-                                oncomplete="#{ror:component('editar_demanda')}.show()">                                
-                                <f:setPropertyActionListener target="#{demandasMB.demandaEditable}" value="#{demanda}" />
-                                Editar Judicial
-                            </roa:commandLink>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Tribunal</f:facet>
-                            <h:outputText value="#{demanda.tribunal}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Rol</f:facet>
-                            <h:outputText value="#{demanda.rol}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Fecha Ingreso Tribunal</f:facet>
-                            <h:outputText value="#{demanda.fechaIngresoTribunal}" >
-                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
-                            </h:outputText>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Fecha Resolución</f:facet>
-                            <h:outputText value="#{demanda.fechaResolucion}" >
-                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
-                            </h:outputText>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Mandamiento</f:facet>
-                            <h:outputText value="#{demanda.mandamiento}" >
-                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
-                            </h:outputText>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Receptor</f:facet>
-                            <h:outputText value="#{demanda.receptor}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Notificada</f:facet>
-                            <h:outputText value="#{demanda.notificada}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Obs. Notificada</f:facet>
-                            <h:outputText value="#{demanda.observacionNotificada}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Embargo</f:facet>
-                            <h:outputText value="#{demanda.embargo}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Obs. Embargo</f:facet>
-                            <h:outputText value="#{demanda.observacionEmbargo}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Costas</f:facet>
-                            <h:outputText value="#{demanda.costas}" >
-                                <f:convertNumber currencyCode="CLP" />
-                            </h:outputText>
-                            <roa:commandLink render="editar_costas" execute="@this"
-                                oncomplete="#{ror:component('editar_costas')}.show()">                                
-                                <f:setPropertyActionListener target="#{demandasMB.demandaEditableCostas}" value="#{demanda}" />
-                                Editar
-                            </roa:commandLink>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Pagado Totalmente?</f:facet>
-                            <h:outputText value="#{demanda.pagadoTotalmente}" />
-                        </ror:column>
-                    </ror:extendedDataTable>
-                    <ror:extendedDataTable rendered="#{demandasMB.vistaTabla == 1}" value="#{demandasMB.demandas}" var="demanda" frozenColumns="1" >
-                        <f:facet name="header">
-                            Demandas
-                        </f:facet>
-                        <ror:column>
-                            <f:facet name="header">Rut</f:facet>
-                            <h:outputText value="#{demanda.rut}" />
-                        </ror:column>                                
-                        <ror:column>
-                            <f:facet name="header">Tarjeta</f:facet>
-                            <h:outputText value="#{demanda.numeroTarjeta}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Nombre</f:facet>
-                            <h:outputText value="#{demanda.nombreCompleto}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Sexo</f:facet>
-                            <h:outputText value="#{demanda.sexo}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Calle Particular</f:facet>
-                            <h:outputText value="#{demanda.calleParticular}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Depto. Particular</f:facet>
-                            <h:outputText value="#{demanda.departamentoParticular}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Número Particular</f:facet>
-                            <h:outputText value="#{demanda.numeroParticular}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Comuna Particular</f:facet>
-                            <h:outputText value="#{demanda.comunaParticular}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Cód. Área Particular</f:facet>
-                            <h:outputText value="#{demanda.codigoAreaParticular}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Fono Particular</f:facet>
-                            <h:outputText value="#{demanda.telefonoParticular}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Calle Comercial</f:facet>
-                            <h:outputText value="#{demanda.calleComercial}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Depto. Comercial</f:facet>
-                            <h:outputText value="#{demanda.departamentoComercial}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Número Comercial</f:facet>
-                            <h:outputText value="#{demanda.numeroComercial}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Comuna Comercial</f:facet>
-                            <h:outputText value="#{demanda.comunaComercial}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Cód. Área Comercial</f:facet>
-                            <h:outputText value="#{demanda.codigoAreaComercial}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Fono Comercial</f:facet>
-                            <h:outputText value="#{demanda.telefonoComercial}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Celular</f:facet>
-                            <h:outputText value="#{demanda.celular}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Capital</f:facet>
-                            <h:outputText value="#{demanda.capital}" >
-                                <f:convertNumber currencyCode="CLP" />
-                            </h:outputText>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Capital Pagaré</f:facet>
-                            <h:outputText value="#{demanda.capitalPagare}" >
-                                <f:convertNumber currencyCode="CLP" />
-                            </h:outputText>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Vencimiento Deuda</f:facet>
-                            <h:outputText value="#{demanda.vencimientoDeuda}">
-                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
-                            </h:outputText>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Vencimiento Pagaré</f:facet>
-                            <h:outputText value="#{demanda.vencimientoPagare}">
-                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
-                            </h:outputText>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Fecha Asignación</f:facet>
-                            <h:outputText value="#{demanda.fechaAsignacion}">
-                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
-                            </h:outputText>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Cód. Abogado</f:facet>
-                            <h:outputText value="#{demanda.codigoAbogado}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Fecha Demanda Corte</f:facet>
-                            <h:outputText value="#{demanda.fechaDemandaCorte}">
-                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
-                            </h:outputText>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Tribunal</f:facet>
-                            <h:outputText value="#{demanda.tribunal}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Rol</f:facet>
-                            <h:outputText value="#{demanda.rol}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Fecha Ingreso Tribunal</f:facet>
-                            <h:outputText value="#{demanda.fechaIngresoTribunal}" >
-                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
-                            </h:outputText>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Fecha Resolución</f:facet>
-                            <h:outputText value="#{demanda.fechaResolucion}" >
-                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
-                            </h:outputText>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Mandamiento</f:facet>
-                            <h:outputText value="#{demanda.mandamiento}" >
-                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
-                            </h:outputText>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Receptor</f:facet>
-                            <h:outputText value="#{demanda.receptor}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Notificada</f:facet>
-                            <h:outputText value="#{demanda.notificada}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Obs. Notificada</f:facet>
-                            <h:outputText value="#{demanda.observacionNotificada}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Embargo</f:facet>
-                            <h:outputText value="#{demanda.embargo}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Obs. Embargo</f:facet>
-                            <h:outputText value="#{demanda.observacionEmbargo}" />
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Costas</f:facet>
-                            <h:outputText value="#{demanda.costas}" >
-                                <f:convertNumber currencyCode="CLP" />
-                            </h:outputText>
-                        </ror:column>
-                        <ror:column>
-                            <f:facet name="header">Pagado Totalmente?</f:facet>
-                            <h:outputText value="#{demanda.pagadoTotalmente?'SI':'NO'}" />
-                        </ror:column>
-                    </ror:extendedDataTable>
-                </h:form>
+                            <f:facet name="controls">
+                                <h:outputLink value="#" onclick="#{ror:component('pagar_abono')}.hide(); return false;">
+                                    Cerrar
+                                </h:outputLink>
+                            </f:facet>
+                            <h:panelGrid columns="2">                           
+
+                                <h:outputText value="Deuda total: " />
+                                <h:outputText value="#{demandasMB.demandaPagoAbono.ultimaProgramacion.totalAPagar}">
+                                    <f:convertNumber currencyCode="CLP" />
+                                </h:outputText>
+
+                                <h:outputText value="Total abonos pagados: " />
+                                <h:outputText value="#{demandasMB.demandaPagoAbono.totalPagado}">
+                                    <f:convertNumber currencyCode="CLP" />
+                                </h:outputText>
+
+                                <h:outputText value="Saldo: " style="font-weight:bold;" />
+                                <h:outputText value="#{demandasMB.demandaPagoAbono.ultimaProgramacion.totalAPagar - demandasMB.demandaPagoAbono.totalPagado}" style="font-weight:bold;">
+                                    <f:convertNumber currencyCode="CLP" />
+                                </h:outputText>
+
+                                <h:outputText value="Monto del Abono según programación: " />
+                                <h:outputText value="#{demandasMB.demandaPagoAbono.ultimaProgramacion.montoPorAbono}" >
+                                    <f:convertNumber currencyCode="CLP" />
+                                </h:outputText>
+
+                                <h:outputText value="Monto del último Abono según programación: " />
+                                <h:outputText value="#{demandasMB.demandaPagoAbono.ultimaProgramacion.montoUltimoAbono}" >
+                                    <f:convertNumber currencyCode="CLP" />
+                                </h:outputText>
+
+                                <h:outputText value="Costas: " />
+                                <h:outputText value="#{demandasMB.demandaPagoAbono.costas}" >
+                                    <f:convertNumber currencyCode="CLP" />
+                                </h:outputText>
+
+                                <h:outputText value="Monto a pagar del Abono: " />
+                                <h:inputText value="#{demandasMB.montoSinDescuento}" >
+                                    <f:convertNumber currencyCode="CLP" />
+                                    <f:ajax event="keyup" render="total_a_pagar" listener="#{demandasMB.calcularTotalAPagar}" />
+                                </h:inputText>
+
+                                <h:outputText value="Descuento según programación: " />
+                                <h:outputText value="#{demandasMB.demandaPagoAbono.ultimaProgramacion.descuentoOfrecido}" >
+                                    <f:convertNumber currencyCode="CLP" />
+                                </h:outputText>
+
+                                <h:outputText value="Descuento a aplicar: " />
+                                <ror:select defaultLabel="0%" value="#{demandasMB.descuentoAplicado}">
+                                    <f:ajax event="selectitem" render="total_a_pagar" listener="#{demandasMB.calcularTotalAPagar}" />
+                                    <f:selectItem itemLabel="0%" itemValue="0.00" />
+                                    <f:selectItem itemLabel="1%" itemValue="0.01" />
+                                    <f:selectItem itemLabel="2%" itemValue="0.02" />
+                                    <f:selectItem itemLabel="3%" itemValue="0.03" />
+                                    <f:selectItem itemLabel="4%" itemValue="0.04" />
+                                    <f:selectItem itemLabel="5%" itemValue="0.05" />
+                                    <f:selectItem itemLabel="6%" itemValue="0.06" />
+                                    <f:selectItem itemLabel="7%" itemValue="0.07" />
+                                    <f:selectItem itemLabel="8%" itemValue="0.08" />
+                                    <f:selectItem itemLabel="9%" itemValue="0.09" />
+                                    <f:selectItem itemLabel="10%" itemValue="0.10" />
+                                </ror:select>
+
+                                <h:outputText value="Total a pagar: " />
+                                <h:outputText id="total_a_pagar" value="#{demandasMB.montoPagado}" >
+                                    <f:convertNumber currencyCode="CLP" />
+                                </h:outputText>
+                            </h:panelGrid>
+
+                            <h:commandButton value="Confirmar Pago" action="#{demandasMB.confirmarPagoAbono}" />
+
+                            <h:commandButton value="Anular" action="#{demandasMB.anularPago}">
+                                <f:ajax execute="@this" />
+                                <ror:componentControl target="pagar_abono" operation="hide" />
+                            </h:commandButton>
+
+                        </ror:popupPanel>
+                    </h:form>
+
+                    <h:form>
+                        <h:outputLabel value="Buscar por " />
+                        <h:selectOneMenu value="#{demandasMB.filtrarPorRut}">
+                            <f:selectItem itemValue="true" itemLabel="RUT" />
+                            <f:selectItem itemValue="false" itemLabel="NOMBRE" />
+                        </h:selectOneMenu>
+                        <h:inputText value="#{demandasMB.filtro}" />
+                        <h:commandButton value="BUSCAR!" actionListener="#{demandasMB.buscar}">
+                            <f:ajax execute="@form" render=":form_demandas" />
+                        </h:commandButton>
+                        <roa:status>
+                            <f:facet name="start">
+                                <h:graphicImage library="images" name="ai.gif" alt="ai" height="20px;" />
+                            </f:facet>
+                        </roa:status>
+                    </h:form>
+
+                    <h:form>
+                        <ror:select value="#{demandasMB.vistaTabla}" >
+                            <f:ajax event="selectitem" render=":form_demandas" />
+                            <f:selectItem itemLabel="FULL" itemValue="1" />
+                            <f:selectItem itemLabel="Datos Administrativos" itemValue="2" />
+                            <f:selectItem itemLabel="Datos Judiciales" itemValue="3" />
+                        </ror:select>
+                        <roa:status>
+                            <f:facet name="start">
+                                <h:graphicImage library="images" name="ai.gif" alt="ai" height="20px;" />
+                            </f:facet>
+                        </roa:status>
+                    </h:form>
+
+                    <h:form>
+                        <ror:popupPanel domElementAttachment="form" id="editar_costas" autosized="true" resizeable="false" modal="true">
+                            <f:facet name="header">Editar Costas</f:facet>
+                            <f:facet name="controls">
+                                <h:outputLink value="#" onclick="#{ror:component('editar_costas')}.hide(); return false;">
+                                    Cerrar
+                                </h:outputLink>
+                            </f:facet>
+                            <h:panelGrid columns="2">
+
+                                <h:outputText value="Rut:  " style="font-weight: bold;" />
+                                <h:outputText value="#{demandasMB.demandaEditableCostas.rut}" />                            
+
+                                <h:outputText value="Costas: " style="font-weight: bold;"/>
+                                <h:inputText value="#{demandasMB.demandaEditableCostas.costas}" />
+                            </h:panelGrid>
+
+                            <h:commandButton value="Editar Costas" actionListener="#{demandasMB.editarCostas}" />
+
+                            <roa:commandButton value="Cancelar" onclick="#{ror:component('editar_costas')}.hide(); return false;" />
+
+                        </ror:popupPanel>
+                    </h:form>
+
+                    <h:form>
+                        <ror:popupPanel domElementAttachment="form" id="programar_abonos" autosized="true" resizeable="false" modal="true">
+                            <f:facet name="header">Programación Abonos</f:facet>
+                            <f:facet name="controls">
+                                <h:outputLink value="#" onclick="#{ror:component('programar_abonos')}.hide(); return false;">
+                                    Cerrar
+                                </h:outputLink>
+                            </f:facet>
+                            <h:panelGrid columns="2">
+
+                                <h:outputText value="Rut:  " style="font-weight: bold;" />
+                                <h:outputText value="#{demandasMB.demandaProgramacion.rut}" />
+
+                                <h:outputText value="Capital: " style="font-weight: bold;" />
+                                <h:outputText value="#{demandasMB.demandaProgramacion.capital}" >
+                                    <f:convertNumber currencyCode="CLP" />
+                                </h:outputText>
+
+                                <h:outputText value="Capital Pagaré:  " style="font-weight: bold;" />
+                                <h:outputText value="#{demandasMB.demandaProgramacion.capitalPagare}" >
+                                    <f:convertNumber currencyCode="CLP" />
+                                </h:outputText>
+
+                                <h:outputText value="Número de abonos: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.numeroDeAbonos}" />
+
+                                <h:outputText value="Utilizar Capital Pagaré?: " style="font-weight: bold;" />
+                                <ror:select value="#{demandasMB.utilizarCapitalPagare}" required="true">
+                                    <f:selectItem itemLabel="Si" itemValue="true" />
+                                    <f:selectItem itemLabel="No (utilizar sólo el Capital)" itemValue="false" />
+                                </ror:select>
+
+                                <h:outputText value="Interés: " style="font-weight: bold;" />
+                                <ror:select value="#{demandasMB.interes}" required="true" >
+                                    <f:selectItem itemLabel="2.0%" itemValue="0.020" />
+                                    <f:selectItem itemLabel="2.5%" itemValue="0.025" />
+                                    <f:selectItem itemLabel="3.0%" itemValue="0.030" />
+                                </ror:select>
+
+                                <h:outputText value="Descuento Ofrecido: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.descuentoOfrecido}" required="true" />
+
+                                <h:outputText value="Costas: " style="font-weight: bold;"/>
+                                <h:outputText value="#{demandasMB.demandaProgramacion.costas}" />
+                            </h:panelGrid>
+
+                            <h:commandButton value="Programar Abonos" actionListener="#{demandasMB.programarAbonos}" />
+
+                            <roa:commandButton value="Cancelar" onclick="#{ror:component('programar_abonos')}.hide(); return false;" />
+
+                        </ror:popupPanel>
+                    </h:form>
+
+                    <h:form>
+                        <ror:popupPanel domElementAttachment="form" id="reprogramar_abonos" autosized="true" resizeable="false" modal="true">
+                            <f:facet name="header">ReProgramación Abonos</f:facet>
+                            <f:facet name="controls">
+                                <h:outputLink value="#" onclick="#{ror:component('reprogramar_abonos')}.hide(); return false;">
+                                    Cerrar
+                                </h:outputLink>
+                            </f:facet>
+                            <h:panelGrid id="grilla" columns="2">
+
+                                <h:outputText value="Rut:  " style="font-weight: bold;" />
+                                <h:outputText value="#{demandasMB.demandaReprogramacion.rut}" />
+
+                                <h:outputText value="Capital: " style="font-weight: bold;" />
+                                <h:outputText value="#{demandasMB.demandaReprogramacion.capital}" >
+                                    <f:convertNumber currencyCode="CLP" />
+                                </h:outputText>
+
+                                <h:outputText value="Capital Pagaré:  " style="font-weight: bold;" />
+                                <h:outputText value="#{demandasMB.demandaReprogramacion.capitalPagare}" >
+                                    <f:convertNumber currencyCode="CLP" />
+                                </h:outputText>
+
+                                <h:outputText value="Número de abonos: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.numeroDeAbonos}" />
+
+                                <h:outputText value="RECALCULAR TOTAL A PAGAR? " />
+                                <h:selectBooleanCheckbox value="#{demandasMB.recalcularTotalAPagar}">
+                                    <f:ajax render="grilla" />
+                                </h:selectBooleanCheckbox>
+
+                                <h:outputText rendered="#{demandasMB.recalcularTotalAPagar}" value="Utilizar Capital Pagaré?: " style="font-weight: bold;" />
+                                <ror:select rendered="#{demandasMB.recalcularTotalAPagar}" value="#{demandasMB.utilizarCapitalPagare}">
+                                    <f:selectItem itemLabel="Si" itemValue="true" />
+                                    <f:selectItem itemLabel="No (utilizar sólo el Capital)" itemValue="false" />
+                                </ror:select>
+
+                                <h:outputText rendered="#{demandasMB.recalcularTotalAPagar}" value="Interés: " style="font-weight: bold;" />
+                                <ror:select rendered="#{demandasMB.recalcularTotalAPagar}" value="#{demandasMB.interes}" required="true" >
+                                    <f:selectItem itemLabel="2.0%" itemValue="0.020" />
+                                    <f:selectItem itemLabel="2.5%" itemValue="0.025" />
+                                    <f:selectItem itemLabel="3.0%" itemValue="0.030" />
+                                </ror:select>
+
+                                <h:outputText value="Descuento Ofrecido: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.descuentoOfrecido}" required="true" />
+
+                                <h:outputText value="Costas: " style="font-weight: bold;"/>
+                                <h:outputText value="#{demandasMB.demandaReprogramacion.costas}" />
+                            </h:panelGrid>
+
+                            <h:commandButton value="Reprogramar Abonos" actionListener="#{demandasMB.reprogramarAbonos}" />
+
+                            <roa:commandButton value="Cancelar" onclick="#{ror:component('reprogramar_abonos')}.hide(); return false;" />
+
+                        </ror:popupPanel>
+                    </h:form>
+
+                    <h:form>
+                        <ror:popupPanel domElementAttachment="form" id="editar_demanda"  autosized="true" resizeable="false" modal="true">
+                            <f:facet name="header">Editar Datos Judiciales</f:facet>
+                            <f:facet name="controls">
+                                <h:outputLink value="#" onclick="#{ror:component('editar_demanda')}.hide(); return false;">
+                                    Cerrar
+                                </h:outputLink>
+                            </f:facet>
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Tribunal: " style="font-weight: bold;" />
+                                <ror:select value="#{demandasMB.demandaEditable.tribunal}" >
+                                    <f:selectItem itemLabel="1° Santiago" itemValue="1° Santiago" />
+                                    <f:selectItem itemLabel="2° Santiago" itemValue="2° Santiago" />
+                                    <f:selectItem itemLabel="3° Santiago" itemValue="3° Santiago" />
+                                    <f:selectItem itemLabel="4° Santiago" itemValue="4° Santiago" />
+                                    <f:selectItem itemLabel="5° Santiago" itemValue="5° Santiago" />
+                                    <f:selectItem itemLabel="6° Santiago" itemValue="6° Santiago" />
+                                    <f:selectItem itemLabel="7° Santiago" itemValue="7° Santiago" />
+                                    <f:selectItem itemLabel="8° Santiago" itemValue="8° Santiago" />
+                                    <f:selectItem itemLabel="9° Santiago" itemValue="9° Santiago" />
+                                    <f:selectItem itemLabel="10° Santiago" itemValue="10° Santiago" />
+                                    <f:selectItem itemLabel="11° Santiago" itemValue="11° Santiago" />
+                                    <f:selectItem itemLabel="12° Santiago" itemValue="12° Santiago" />
+                                    <f:selectItem itemLabel="13° Santiago" itemValue="13° Santiago" />
+                                    <f:selectItem itemLabel="14° Santiago" itemValue="14° Santiago" />
+                                    <f:selectItem itemLabel="15° Santiago" itemValue="15° Santiago" />
+                                    <f:selectItem itemLabel="16° Santiago" itemValue="16° Santiago" />
+                                    <f:selectItem itemLabel="17° Santiago" itemValue="17° Santiago" />
+                                    <f:selectItem itemLabel="18° Santiago" itemValue="18° Santiago" />
+                                    <f:selectItem itemLabel="19° Santiago" itemValue="19° Santiago" />
+                                    <f:selectItem itemLabel="20° Santiago" itemValue="20° Santiago" />
+                                    <f:selectItem itemLabel="21° Santiago" itemValue="21° Santiago" />
+                                    <f:selectItem itemLabel="22° Santiago" itemValue="22° Santiago" />
+                                    <f:selectItem itemLabel="23° Santiago" itemValue="23° Santiago" />
+                                    <f:selectItem itemLabel="24° Santiago" itemValue="24° Santiago" />
+                                    <f:selectItem itemLabel="25° Santiago" itemValue="25° Santiago" />
+                                    <f:selectItem itemLabel="26° Santiago" itemValue="26° Santiago" />
+                                    <f:selectItem itemLabel="27° Santiago" itemValue="27° Santiago" />
+                                    <f:selectItem itemLabel="28° Santiago" itemValue="28° Santiago" />
+                                    <f:selectItem itemLabel="29° Santiago" itemValue="29° Santiago" />
+                                    <f:selectItem itemLabel="30° Santiago" itemValue="30° Santiago" />
+                                    <f:selectItem itemLabel="1° Puente Alto" itemValue="1° Puente Alto" />
+                                    <f:selectItem itemLabel="1° San Miguel" itemValue="1° San Miguel" />
+                                    <f:selectItem itemLabel="2° San Miguel" itemValue="2° San Miguel" />
+                                    <f:selectItem itemLabel="3° San Miguel" itemValue="3° San Miguel" />
+                                    <f:selectItem itemLabel="4° San Miguel" itemValue="4° San Miguel" />
+                                    <f:selectItem itemLabel="1° San Bernardo" itemValue="1° San Bernardo" />
+                                    <f:selectItem itemLabel="2° San Bernardo" itemValue="2° San Bernardo" />
+                                    <f:selectItem itemLabel="1° Buin" itemValue="1° Buin" />
+                                    <f:selectItem itemLabel="2° Buin" itemValue="2° Buin" />
+                                    <f:selectItem itemLabel="1° Talagante" itemValue="1° Talagante"  />
+                                    <f:selectItem itemLabel="2° Talagante" itemValue="2° Talagante"  />
+                                    <f:selectItem itemLabel="1° Colina" itemValue="1° Colina"  />
+                                    <f:selectItem itemLabel="1° Peñaflor" itemValue="1° Peñaflor"  />
+                                </ror:select>                       
+
+                                <h:outputText value="Rol: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.demandaEditable.rol}" />
+
+                                <h:outputText value="Fecha Ingreso Tribunal: " style="font-weight: bold;" />
+                                <ror:calendar value="#{demandasMB.demandaEditable.fechaIngresoTribunal}"  />
+
+                                <h:outputText value="Fecha Resolución: " style="font-weight: bold;" />
+                                <ror:calendar value="#{demandasMB.demandaEditable.fechaResolucion}" />
+
+                                <h:outputText value="Fecha Mandamiento:" style="font-weight: bold;" />
+                                <ror:calendar value="#{demandasMB.demandaEditable.mandamiento}" />
+
+                                <h:outputText value="Receptor: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.demandaEditable.receptor}" />
+
+                                <h:outputText value="Notificada: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.demandaEditable.notificada}" />
+
+                                <h:outputText value="Observación Notificada: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.demandaEditable.observacionNotificada}" />
+
+                                <h:outputText value="Embargo: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.demandaEditable.embargo}" />
+
+                                <h:outputText value="Observación Embargo: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.demandaEditable.observacionEmbargo}" />
+
+                                <ui:remove>
+                                    <h:outputText value="Costas: " style="font-weight: bold;" />
+                                    <h:inputText value="#{demandasMB.demandaEditable.costas}">
+                                        <f:validateLongRange minimum="0" />
+                                    </h:inputText>
+                                </ui:remove>
+
+                            </h:panelGrid>
+
+                            <h:commandButton value="Guardar" actionListener="#{demandasMB.editarDemanda}" />
+
+                            <roa:commandButton value="Cancelar" onclick="#{ror:component('editar_demanda')}.hide(); return false;" />
+                        </ror:popupPanel>
+                    </h:form>
+
+                    <h:form>
+                        <ror:popupPanel domElementAttachment="form" id="editar_demanda2"  autosized="true" resizeable="false" modal="true">
+                            <f:facet name="header">Editar Datos Administrativos</f:facet>
+                            <f:facet name="controls">
+                                <h:outputLink value="#" onclick="#{ror:component('editar_demanda2')}.hide(); return false;">
+                                    Cerrar
+                                </h:outputLink>
+                            </f:facet>
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Calle Particular: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.demandaEditable.calleParticular}" />
+
+                                <h:outputText value="Depto Particular: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.demandaEditable.departamentoParticular}"  />
+
+                                <h:outputText value="Numero Particular: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.demandaEditable.numeroParticular}" />
+
+                                <h:outputText value="Comuna Particular:" style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.demandaEditable.comunaParticular}" />
+
+                                <h:outputText value="Codigo de Area Particular: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.demandaEditable.codigoAreaParticular}" />
+
+                                <h:outputText value="Telefono Particular: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.demandaEditable.telefonoParticular}" />
+
+                                <h:outputText value="Calle Comercial: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.demandaEditable.calleComercial}" />
+
+                                <h:outputText value="Depto Comercial: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.demandaEditable.departamentoComercial}"  />
+
+                                <h:outputText value="Numero Comercial: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.demandaEditable.numeroComercial}" />
+
+                                <h:outputText value="Comuna Comercial:" style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.demandaEditable.comunaComercial}" />
+
+                                <h:outputText value="Codigo de Area Comercial: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.demandaEditable.codigoAreaComercial}" />
+
+                                <h:outputText value="Telefono Comercial: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.demandaEditable.telefonoComercial}" />
+
+
+                                <h:outputText value="Celular: " style="font-weight: bold;" />
+                                <h:inputText value="#{demandasMB.demandaEditable.celular}" />
+
+                                <h:outputText value="Fecha Demanda Corte: " style="font-weight: bold;" />
+                                <ror:calendar value="#{demandasMB.demandaEditable.fechaDemandaCorte}" />
+                            </h:panelGrid>
+
+                            <h:commandButton value="Guardar" actionListener="#{demandasMB.editarDatosAdministrativos}" />
+
+                            <roa:commandButton value="Cancelar" onclick="#{ror:component('editar_demanda2')}.hide(); return false;" />
+                        </ror:popupPanel>
+                    </h:form>
+
+                    <h:form id="form_demandas">  
+                        <ror:extendedDataTable rendered="#{demandasMB.vistaTabla == 2}" value="#{demandasMB.demandas}" var="demanda" frozenColumns="1" >
+                            <f:facet name="header">
+                                Demandas
+                            </f:facet>
+                            <ror:column>
+                                <f:facet name="header">Rut</f:facet>
+                                <h:outputText value="#{demanda.rut}" />
+                            </ror:column>                                
+                            <ror:column>
+                                <f:facet name="header">Tarjeta</f:facet>
+                                <h:outputText value="#{demanda.numeroTarjeta}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Programación</f:facet>
+                                <roa:commandLink rendered="#{demanda.programaciones.isEmpty()}" render="programar_abonos" execute="@this"
+                                                 oncomplete="#{ror:component('programar_abonos')}.show()">                                
+                                    <f:setPropertyActionListener target="#{demandasMB.demandaProgramacion}" value="#{demanda}" />
+                                    Programar Abonos
+                                </roa:commandLink>
+                                <roa:commandLink rendered="#{!demanda.programaciones.isEmpty()}" render="reprogramar_abonos" execute="@this"
+                                                 oncomplete="#{ror:component('reprogramar_abonos')}.show()">                              
+                                    <f:setPropertyActionListener target="#{demandasMB.demandaReprogramacion}" value="#{demanda}" />
+                                    ReProgramar Abonos
+                                </roa:commandLink>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Pagar Abono</f:facet>
+                                <roa:commandLink render="pagar_abono" execute="@this"
+                                                 oncomplete="#{ror:component('pagar_abono')}.show()">
+                                    <f:setPropertyActionListener target="#{demandasMB.demandaPagoAbono}" value="#{demanda}" />
+                                    Pagar Abono
+                                </roa:commandLink>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Detalle de pagos</f:facet>
+                                <roa:commandLink render="detalle_pagos" execute="@this" oncomplete="#{ror:component('detalle_pagos')}.show()">
+                                    <f:setPropertyActionListener target="#{demandasMB.demandaDetalles}" value="#{demanda}" />
+                                    Detalle de pagos
+                                </roa:commandLink>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Editar</f:facet>
+                                <roa:commandLink render="editar_demanda2" execute="@this" oncomplete="#{ror:component('editar_demanda2')}.show()">                                
+                                    <f:setPropertyActionListener target="#{demandasMB.demandaEditable}" value="#{demanda}" />
+                                    Editar Administrativo
+                                </roa:commandLink>
+                            </ror:column>                        
+                            <ror:column>
+                                <f:facet name="header">Nombre</f:facet>
+                                <h:outputText value="#{demanda.nombreCompleto}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Sexo</f:facet>
+                                <h:outputText value="#{demanda.sexo}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Calle Particular</f:facet>
+                                <h:outputText value="#{demanda.calleParticular}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Depto. Particular</f:facet>
+                                <h:outputText value="#{demanda.departamentoParticular}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Número Particular</f:facet>
+                                <h:outputText value="#{demanda.numeroParticular}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Comuna Particular</f:facet>
+                                <h:outputText value="#{demanda.comunaParticular}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Cód. Área Particular</f:facet>
+                                <h:outputText value="#{demanda.codigoAreaParticular}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Fono Particular</f:facet>
+                                <h:outputText value="#{demanda.telefonoParticular}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Calle Comercial</f:facet>
+                                <h:outputText value="#{demanda.calleComercial}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Depto. Comercial</f:facet>
+                                <h:outputText value="#{demanda.departamentoComercial}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Número Comercial</f:facet>
+                                <h:outputText value="#{demanda.numeroComercial}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Comuna Comercial</f:facet>
+                                <h:outputText value="#{demanda.comunaComercial}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Cód. Área Comercial</f:facet>
+                                <h:outputText value="#{demanda.codigoAreaComercial}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Fono Comercial</f:facet>
+                                <h:outputText value="#{demanda.telefonoComercial}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Celular</f:facet>
+                                <h:outputText value="#{demanda.celular}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Capital</f:facet>
+                                <h:outputText value="#{demanda.capital}" >
+                                    <f:convertNumber currencyCode="CLP" />
+                                </h:outputText>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Capital Pagaré</f:facet>
+                                <h:outputText value="#{demanda.capitalPagare}" >
+                                    <f:convertNumber currencyCode="CLP" />
+                                </h:outputText>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Vencimiento Deuda</f:facet>
+                                <h:outputText value="#{demanda.vencimientoDeuda}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
+                                </h:outputText>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Vencimiento Pagaré</f:facet>
+                                <h:outputText value="#{demanda.vencimientoPagare}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
+                                </h:outputText>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Fecha Asignación</f:facet>
+                                <h:outputText value="#{demanda.fechaAsignacion}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
+                                </h:outputText>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Cód. Abogado</f:facet>
+                                <h:outputText value="#{demanda.codigoAbogado}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Fecha Demanda Corte</f:facet>
+                                <h:outputText value="#{demanda.fechaDemandaCorte}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
+                                </h:outputText>
+                            </ror:column>
+                        </ror:extendedDataTable>
+                        <ror:extendedDataTable rendered="#{demandasMB.vistaTabla == 3}" value="#{demandasMB.demandas}" var="demanda" frozenColumns="1" >
+                            <f:facet name="header">
+                                Demandas
+                            </f:facet>
+                            <ror:column>
+                                <f:facet name="header">Rut</f:facet>
+                                <h:outputText value="#{demanda.rut}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Editar</f:facet>
+                                <roa:commandLink render="editar_demanda" execute="@this"
+                                                 oncomplete="#{ror:component('editar_demanda')}.show()">                                
+                                    <f:setPropertyActionListener target="#{demandasMB.demandaEditable}" value="#{demanda}" />
+                                    Editar Judicial
+                                </roa:commandLink>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Tribunal</f:facet>
+                                <h:outputText value="#{demanda.tribunal}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Rol</f:facet>
+                                <h:outputText value="#{demanda.rol}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Fecha Ingreso Tribunal</f:facet>
+                                <h:outputText value="#{demanda.fechaIngresoTribunal}" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
+                                </h:outputText>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Fecha Resolución</f:facet>
+                                <h:outputText value="#{demanda.fechaResolucion}" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
+                                </h:outputText>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Mandamiento</f:facet>
+                                <h:outputText value="#{demanda.mandamiento}" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
+                                </h:outputText>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Receptor</f:facet>
+                                <h:outputText value="#{demanda.receptor}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Notificada</f:facet>
+                                <h:outputText value="#{demanda.notificada}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Obs. Notificada</f:facet>
+                                <h:outputText value="#{demanda.observacionNotificada}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Embargo</f:facet>
+                                <h:outputText value="#{demanda.embargo}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Obs. Embargo</f:facet>
+                                <h:outputText value="#{demanda.observacionEmbargo}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Costas</f:facet>
+                                <h:outputText value="#{demanda.costas}" >
+                                    <f:convertNumber currencyCode="CLP" />
+                                </h:outputText>
+                                <roa:commandLink render="editar_costas" execute="@this"
+                                                 oncomplete="#{ror:component('editar_costas')}.show()">                                
+                                    <f:setPropertyActionListener target="#{demandasMB.demandaEditableCostas}" value="#{demanda}" />
+                                    Editar
+                                </roa:commandLink>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Pagado Totalmente?</f:facet>
+                                <h:outputText value="#{demanda.pagadoTotalmente}" />
+                            </ror:column>
+                        </ror:extendedDataTable>
+                        <ror:extendedDataTable rendered="#{demandasMB.vistaTabla == 1}" value="#{demandasMB.demandas}" var="demanda" frozenColumns="1" >
+                            <f:facet name="header">
+                                Demandas
+                            </f:facet>
+                            <ror:column>
+                                <f:facet name="header">Rut</f:facet>
+                                <h:outputText value="#{demanda.rut}" />
+                            </ror:column>                                
+                            <ror:column>
+                                <f:facet name="header">Tarjeta</f:facet>
+                                <h:outputText value="#{demanda.numeroTarjeta}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Nombre</f:facet>
+                                <h:outputText value="#{demanda.nombreCompleto}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Sexo</f:facet>
+                                <h:outputText value="#{demanda.sexo}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Calle Particular</f:facet>
+                                <h:outputText value="#{demanda.calleParticular}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Depto. Particular</f:facet>
+                                <h:outputText value="#{demanda.departamentoParticular}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Número Particular</f:facet>
+                                <h:outputText value="#{demanda.numeroParticular}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Comuna Particular</f:facet>
+                                <h:outputText value="#{demanda.comunaParticular}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Cód. Área Particular</f:facet>
+                                <h:outputText value="#{demanda.codigoAreaParticular}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Fono Particular</f:facet>
+                                <h:outputText value="#{demanda.telefonoParticular}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Calle Comercial</f:facet>
+                                <h:outputText value="#{demanda.calleComercial}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Depto. Comercial</f:facet>
+                                <h:outputText value="#{demanda.departamentoComercial}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Número Comercial</f:facet>
+                                <h:outputText value="#{demanda.numeroComercial}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Comuna Comercial</f:facet>
+                                <h:outputText value="#{demanda.comunaComercial}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Cód. Área Comercial</f:facet>
+                                <h:outputText value="#{demanda.codigoAreaComercial}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Fono Comercial</f:facet>
+                                <h:outputText value="#{demanda.telefonoComercial}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Celular</f:facet>
+                                <h:outputText value="#{demanda.celular}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Capital</f:facet>
+                                <h:outputText value="#{demanda.capital}" >
+                                    <f:convertNumber currencyCode="CLP" />
+                                </h:outputText>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Capital Pagaré</f:facet>
+                                <h:outputText value="#{demanda.capitalPagare}" >
+                                    <f:convertNumber currencyCode="CLP" />
+                                </h:outputText>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Vencimiento Deuda</f:facet>
+                                <h:outputText value="#{demanda.vencimientoDeuda}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
+                                </h:outputText>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Vencimiento Pagaré</f:facet>
+                                <h:outputText value="#{demanda.vencimientoPagare}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
+                                </h:outputText>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Fecha Asignación</f:facet>
+                                <h:outputText value="#{demanda.fechaAsignacion}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
+                                </h:outputText>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Cód. Abogado</f:facet>
+                                <h:outputText value="#{demanda.codigoAbogado}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Fecha Demanda Corte</f:facet>
+                                <h:outputText value="#{demanda.fechaDemandaCorte}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
+                                </h:outputText>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Tribunal</f:facet>
+                                <h:outputText value="#{demanda.tribunal}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Rol</f:facet>
+                                <h:outputText value="#{demanda.rol}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Fecha Ingreso Tribunal</f:facet>
+                                <h:outputText value="#{demanda.fechaIngresoTribunal}" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
+                                </h:outputText>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Fecha Resolución</f:facet>
+                                <h:outputText value="#{demanda.fechaResolucion}" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
+                                </h:outputText>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Mandamiento</f:facet>
+                                <h:outputText value="#{demanda.mandamiento}" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Santiago" />
+                                </h:outputText>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Receptor</f:facet>
+                                <h:outputText value="#{demanda.receptor}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Notificada</f:facet>
+                                <h:outputText value="#{demanda.notificada}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Obs. Notificada</f:facet>
+                                <h:outputText value="#{demanda.observacionNotificada}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Embargo</f:facet>
+                                <h:outputText value="#{demanda.embargo}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Obs. Embargo</f:facet>
+                                <h:outputText value="#{demanda.observacionEmbargo}" />
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Costas</f:facet>
+                                <h:outputText value="#{demanda.costas}" >
+                                    <f:convertNumber currencyCode="CLP" />
+                                </h:outputText>
+                            </ror:column>
+                            <ror:column>
+                                <f:facet name="header">Pagado Totalmente?</f:facet>
+                                <h:outputText value="#{demanda.pagadoTotalmente?'SI':'NO'}" />
+                            </ror:column>
+                        </ror:extendedDataTable>
+                    </h:form>
+                </h:panelGroup>
             </ui:define>
 
         </ui:composition>

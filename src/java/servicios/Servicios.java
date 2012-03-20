@@ -617,6 +617,9 @@ public class Servicios  {
         
         List<Object[]> abonosWeb = Util.parsearPagosWeb(pagosWeb);
         
+        if (abonosWeb.isEmpty()) {
+            throw new BusinessLogicException("No se encontró ningún abono en la lista.");
+        }
         for (int i = 0; i < abonosWeb.size(); i++) {
             Object[] abonoBruto = abonosWeb.get(i);
             
