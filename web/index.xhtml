@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ror="http://richfaces.org/rich"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:roa="http://richfaces.org/a4j">
+
+    <body>
+
+        <ui:composition template="/TEMPLATE.xhtml">
+
+            <ui:define name="content">
+                <ror:notifyMessages id="notificaciones" stayTime="2000" nonblocking="true" showDetail="true" />
+                
+                <h:form>
+                    <ror:panel header="LOGIN">
+                        <h:panelGrid columns="2">
+                            <h:outputText value="RUT: " />
+                            <h:inputText value="#{loginMB.rut}" required="true" />
+                            
+                            <h:outputText value="PASS: " />
+                            <h:inputSecret value="#{loginMB.password}" required="true" />
+                        </h:panelGrid>
+                        
+                        <h:commandButton value="LOGIN" action="#{loginMB.login}" style="background-color: #{a4jSkin.generalBackgroundColor};" />
+                    </ror:panel>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
