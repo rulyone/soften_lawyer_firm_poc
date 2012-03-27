@@ -342,7 +342,7 @@ public class Util implements Serializable {
             table.addCell(new Phrase(String.valueOf(numAbono) + " (realizado en la programación #" + numProgramacion + ").", FontFactory.getFont(FontFactory.HELVETICA, 10f)));
             
             table.addCell(new Phrase("RUT:", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10f)));
-            table.addCell(new Phrase(abono.getProgramacionAbonos().getDemanda().getRut(), FontFactory.getFont(FontFactory.HELVETICA, 10f)));
+            table.addCell(new Phrase(formatearRut(abono.getProgramacionAbonos().getDemanda().getRut()), FontFactory.getFont(FontFactory.HELVETICA, 10f)));
             
             String nombre = abono.getProgramacionAbonos().getDemanda().getNombreCompleto();
             table.addCell(new Phrase("Nombre:", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10f)));
@@ -363,7 +363,7 @@ public class Util implements Serializable {
             table.addCell(new Phrase("JUICIO EJECUTIVO", FontFactory.getFont(FontFactory.HELVETICA, 10f)));
             
             table.addCell(new Phrase("Monto:", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10f)));
-            table.addCell(new Phrase(abono.getMontoPagado().toString(), FontFactory.getFont(FontFactory.HELVETICA, 10f)));
+            table.addCell(new Phrase(formatearDinero(abono.getMontoPagado().toString()), FontFactory.getFont(FontFactory.HELVETICA, 10f)));
             
             table.addCell(new Phrase("Atendido por:", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10f)));
             table.addCell(new Phrase(abono.getResponsable().toString(), FontFactory.getFont(FontFactory.HELVETICA, 10f)));
@@ -412,7 +412,7 @@ public class Util implements Serializable {
             table.addCell(new Phrase(String.valueOf(numAbono) + " (realizado en la programación #" + numProgramacion + ").", FontFactory.getFont(FontFactory.HELVETICA, 10f)));
             
             table.addCell(new Phrase("RUT:", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10f)));
-            table.addCell(new Phrase(abono.getProgramacionAbonos().getDemanda().getRut(), FontFactory.getFont(FontFactory.HELVETICA, 10f)));
+            table.addCell(new Phrase(formatearRut(abono.getProgramacionAbonos().getDemanda().getRut()), FontFactory.getFont(FontFactory.HELVETICA, 10f)));
             
             
             table.addCell(new Phrase("Nombre:", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10f)));
@@ -431,7 +431,7 @@ public class Util implements Serializable {
             table.addCell(new Phrase("JUICIO EJECUTIVO", FontFactory.getFont(FontFactory.HELVETICA, 10f)));
             
             table.addCell(new Phrase("Monto:", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10f)));
-            table.addCell(new Phrase(abono.getMontoPagado().toString(), FontFactory.getFont(FontFactory.HELVETICA, 10f)));
+            table.addCell(new Phrase(formatearDinero(abono.getMontoPagado().toString()), FontFactory.getFont(FontFactory.HELVETICA, 10f)));
             
             table.addCell(new Phrase("Atendido por:", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10f)));
             table.addCell(new Phrase(abono.getResponsable().toString(), FontFactory.getFont(FontFactory.HELVETICA, 10f)));
@@ -460,6 +460,11 @@ public class Util implements Serializable {
         ServletOutputStream out = response.getOutputStream();
         baos.writeTo(out);
         out.flush();
+    }
+    
+    public static String formatearDinero(String dinero) {
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("es-CL"));
+        return nf.format(Integer.parseInt(dinero));
     }
     
     public static String formatearRut(String rut) {

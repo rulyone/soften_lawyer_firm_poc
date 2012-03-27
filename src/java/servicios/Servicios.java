@@ -49,6 +49,7 @@ public class Servicios  {
     @PermitAll
     public void actualizarUltimoAcceso(String rut) {
         Usuario usuario = userFac.getUsuarioPorRut(rut);
+        
         usuario.setFechaUltimoAcceso(new Date());
         userFac.edit(usuario);
     }
