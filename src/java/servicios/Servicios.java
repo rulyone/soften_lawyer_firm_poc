@@ -738,4 +738,8 @@ public class Servicios  {
         return userFac.findAll();
     }
 
+    public List<Abono> getAbonosPorResponsable(Usuario responsable) {
+        return aboFac.buscarPorResponsable(responsable);
+    }
+    
 }

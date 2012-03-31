@@ -17,7 +17,7 @@
                 </h:panelGroup>
                 <h:panelGroup rendered="#{(ror:isUserInRole('ADMIN') or ror:isUserInRole('NORMAL'))}">
 
-                    <ror:notifyMessages id="notificaciones" sticky="true" showDetail="true" />
+                    <ror:notifyMessages id="notificaciones" sticky="true" showDetail="true" globalOnly="true" />
 
                     <h:form>
 
@@ -55,26 +55,39 @@
                                     Cerrar
                                 </h:outputLink>
                             </f:facet>
-                            <h:panelGrid columns="2">
-                                <h:outputText value="Nombre Completo" style="font-weight: bold;" />
-                                <h:inputText value="#{demandasMB.nombreCompleto}" />
+                            <h:panelGrid columns="3">
+                                <h:outputLabel for="nombre_completo" value="Nombre Completo" style="font-weight: bold;" />
+                                <h:inputText id="nombre_completo" value="#{demandasMB.nombreCompleto}" >
+                                    <ror:validator />
+                                </h:inputText>
+                                <ror:message for="nombre_completo" />
 
-                                <h:outputText value="RUT: " style="font-weight: bold;" />
-                                <h:inputText value="#{demandasMB.rut}" />
+                                <h:outputLabel for="rut" value="RUT: " style="font-weight: bold;" />
+                                <h:inputText id="rut" value="#{demandasMB.rut}" >
+                                    <ror:validator />
+                                </h:inputText>
+                                <ror:message for="rut" />
 
-                                <h:outputText value="PASSWORD: " style="font-weight: bold;" />
-                                <h:inputSecret value="#{demandasMB.password}" />
+                                <h:outputLabel for="password" value="PASSWORD: " style="font-weight: bold;" />
+                                <h:inputSecret id="password" value="#{demandasMB.password}" >
+                                    <ror:validator />
+                                </h:inputSecret>
+                                <ror:message for="password" />
 
-                                <h:outputText value="ROL: " style="font-weight: bold;" />
-                                <ror:select value="#{demandasMB.rol}" required="true" >
+                                <h:outputLabel for="rol" value="ROL: " style="font-weight: bold;" />
+                                <ror:select id="rol" value="#{demandasMB.rol}" required="true" requiredMessage="Debes seleccionar un rol." >
                                     <f:selectItem itemLabel="NORMAL" itemValue="NORMAL" />
                                     <f:selectItem itemLabel="ADMIN" itemValue="ADMIN" />
+                                    <ror:validator />
                                 </ror:select>
+                                <ror:message for="rol" />
 
                             </h:panelGrid>
 
-                            <h:commandButton value="Crear usuario" actionListener="#{demandasMB.crearUsuario}" />
-
+                            <roa:commandButton value="Crear Usuario" oncomplete="#{ror:component('crear_usuario')}.hide(); return true;" action="#{demandasMB.crearUsuario}" render="@form" >
+                                <roa:ajax event="click" />
+                            </roa:commandButton>
+                            
                             <roa:commandButton value="Cancelar" onclick="#{ror:component('crear_usuario')}.hide(); return false;" />
 
                         </ror:popupPanel>
@@ -111,10 +124,14 @@
                                 </h:outputLink>
                             </f:facet>
                             <h:outputText value="Pegar datos en formato CSV: " />
-                            <h:inputTextarea cols="150" rows="25" value="#{demandasMB.datosCSV}" />
+                            <h:inputTextarea id="datos_csv" cols="150" rows="25" value="#{demandasMB.datosCSV}" required="true" requiredMessage="No se ha ingresado nada...">
+                                <ror:validator />
+                            </h:inputTextarea>
 
-                            <h:commandButton value="Ingresar!" action="#{demandasMB.ingresarDatosCSV}">
-                            </h:commandButton>
+                            <roa:commandButton value="Ingresar!" action="#{demandasMB.ingresarDatosCSV}" render="@form">
+                                <roa:ajax event="click" />
+                            </roa:commandButton>
+                            <ror:message for="datos_csv" />
                         </ror:popupPanel>
                         <roa:status>
                             <f:facet name="start">
@@ -131,7 +148,8 @@
                                     Cerrar
                                 </h:outputLink>
                             </f:facet>
-                            <ror:dataTable value="#{demandasMB.usuarios}" var="usuario">
+                            <ror:dataScroller for="tabla_administrar_usuarios" />
+                            <ror:dataTable id="tabla_administrar_usuarios" value="#{demandasMB.usuarios}" var="usuario" rows="10">
                                 <ror:column>
                                     <f:facet name="header">RUT</f:facet>
                                     <h:outputText value="#{usuario.rut}" />
@@ -166,8 +184,59 @@
                                     </h:commandLink>
                                     <roa:commandLink rendered="#{usuario.bloqueado and !(usuario.rol eq 'ADMIN')}" value="DESBLOQUEAR USUARIO" action="#{demandasMB.desbloquearUsuario(usuario.rut)}" styleClass="no-decor" render="@all" execute="@this">
                                     </roa:commandLink>
-                                </ror:column>                            
+                                </ror:column> 
+                                <ror:column>
+                                    <f:facet name="header"></f:facet>
+                                    <roa:commandButton value="Ver Historial de abonos" action="#{demandasMB.verHistorialAbonos(usuario)}" >
+                                        <roa:ajax event="click" execute="@this" render="panel_historial" />
+                                    </roa:commandButton>
+                                    <h:outputText id="ok" value="#{demandasMB.responsable}" />
+                                </ror:column>
                             </ror:dataTable>
+                            
+                            <ror:panel id="panel_historial" >
+                                <p>
+                                    <h:outputText value="Abonos realizados por #{demandasMB.responsable.nombreCompleto} (rut: #{demandasMB.responsable.rut})." rendered="#{demandasMB.responsable != null}" />
+                                </p>
+                                <ror:dataScroller for="tabla_historial" />
+                                <ror:dataTable id="tabla_historial" value="#{demandasMB.abonos}" var="abono">
+                                    <f:facet name="header">HISTORIAL ABONOS</f:facet>
+                                    <ror:column>
+                                        <f:facet name="header">Id</f:facet>
+                                        #{abono.id}
+                                    </ror:column>
+                                    <ror:column>
+                                        <f:facet name="header">Monto sin dscto</f:facet>
+                                        <h:outputText value="#{abono.montoSinDescuento}" >
+                                            <f:convertNumber currencyCode="CLP" />
+                                        </h:outputText>
+                                    </ror:column>
+                                    <ror:column>
+                                        <f:facet name="header">Monto pagado</f:facet>
+                                        <h:outputText value="#{abono.montoPagado}" >
+                                            <f:convertNumber currencyCode="CLP" />
+                                        </h:outputText>
+                                    </ror:column>
+                                    <ror:column>
+                                        <f:facet name="header">Dscto. aplicado</f:facet>
+                                        <h:outputText value="#{abono.descuentoAplicado}" >
+                                            <f:convertNumber currencyCode="CLP" />
+                                        </h:outputText>
+                                    </ror:column>
+                                    <ror:column>
+                                        <f:facet name="header">¿Pago web?</f:facet>
+                                        <h:outputText value="#{abono.pagoWeb?'SI':'NO'}" />
+                                    </ror:column>
+                                    <ror:column>
+                                        <f:facet name="header">Fecha pago web</f:facet>
+                                        <h:outputText value="#{abono.fechaPagoWeb}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy" locale="es_CL" timeZone="America/Santiago" />
+                                        </h:outputText>
+                                    </ror:column>
+                                    
+                                </ror:dataTable>
+                            </ror:panel>
+                            
                         </ror:popupPanel>
                     </h:form>
 

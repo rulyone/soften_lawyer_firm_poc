@@ -5,6 +5,8 @@
 package entidades.fachadas;
 
 import entidades.Abono;
+import entidades.Usuario;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,6 +27,12 @@ public class AbonoFacade extends AbstractFacade<Abono> {
 
     public AbonoFacade() {
         super(Abono.class);
+    }
+    
+    public List<Abono> buscarPorResponsable(Usuario responsable) {
+        return em.createNamedQuery("Abono.buscarPorResponsable", Abono.class)
+                .setParameter("responsable", responsable)
+                .getResultList();
     }
     
 }

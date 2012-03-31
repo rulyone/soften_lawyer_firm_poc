@@ -20,6 +20,9 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name="ABONOS")
+@NamedQueries({
+    @NamedQuery(name="Abono.buscarPorResponsable", query="SELECT a FROM Abono a WHERE a.responsable = :responsable")
+})
 public class Abono implements Serializable {
     
     private static final long serialVersionUID = 1L;

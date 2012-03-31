@@ -22,10 +22,13 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
+import org.jboss.seam.international.status.Messages;
 import servicios.BusinessLogicException;
 import servicios.Servicios;
 import servicios.Util;
@@ -34,10 +37,12 @@ import servicios.Util;
  *
  * @author rulyone
  */
-@ManagedBean
+@Named
 @ViewScoped
 public class DemandasMB implements Serializable {
 
+    @Inject Messages msgs;
+    
     @EJB private Servicios servicios;
     
     private List<Demanda> demandas;
@@ -59,17 +64,17 @@ public class DemandasMB implements Serializable {
     
     //PROGRAMAR ABONOS
     private Demanda demandaProgramacion;
-    @Min(1)
-    @Max(36)
+    @Min(message="El número de abonos debe ser al menos 1.", value=1)
+    @Max(message="El número de abonos debe ser menor o igual a 36.", value=36)
     private int numeroDeAbonos = 1;
     @NotNull(message="Debes seleccionar si se utilizará capital pagaré o sólo capital.")
     private Boolean utilizarCapitalPagare;
-    @NotNull
-    @Min(0)
+    @NotNull(message="El interés es obligatorio.")
+    @Min(message="El interés debe ser mayor o igual a 0.", value=0)
     private BigDecimal interes;
-    @NotNull
+    @NotNull(message="El valor de descuento es obligatorio (poner 0 en caso que no haya descuento).")
     @Min(0)
-    @Max(1)
+    @Max(100)
     private BigDecimal descuentoOfrecido = new BigDecimal("0.00");
     
     //REPROGRAMAR ABONOS
@@ -81,15 +86,16 @@ public class DemandasMB implements Serializable {
     private Demanda demandaEditableCostas;
     
     //CREAR USUARIO
-    @NotNull
-    @Length(min=5, max=20)
+    @NotNull(message="El rut es obligatorio")
+    @Length(min=5, max=20, message="Rut debe contener entre 5 y 20 caracteres")
     private String rut;
-    @NotNull
+    @NotNull(message="La password es obligatoria")
+    @Length(min=5, message="La password debe tener al menos 5 caracteres")
     private String password;
-    @NotNull
-    @Length(min=10, max=255)
+    @NotNull(message="El nombre es obligatorio")
+    @Length(min=10, max=255, message="El nombre completo debe tener al menos 10 y máximo 255 caracteres")
     private String nombreCompleto;
-    @NotNull
+    @NotNull(message="El rol es obligatorio")
     private String rol;
     
     //PAGAR BONO
@@ -107,6 +113,10 @@ public class DemandasMB implements Serializable {
     //BLOCKEAR/DESBLOCKEAR USUARIOS
     private List<Usuario> usuarios;
     private Usuario usuarioSeleccionado;
+    
+    //MOSTRAR ABONOS POR RESPONSABLE
+    private List<Abono> abonos;
+    private Usuario responsable;
     
     /**
      * Creates a new instance of DemandasMB
@@ -151,14 +161,20 @@ public class DemandasMB implements Serializable {
             return null;
         }
 
+        if (list.isEmpty()) {
+            Util.addErrorMessage("No se ha ingresado ninguna demanda.", null);
+            return null;
+        }
+        
         try {
             servicios.ingresarDatosAdministrativos(list);
             demandas = servicios.getDemandas();
             Util.addInfoMessage("Demandas ingresadas satisfactoriamente.", null);
+            return "/aplicacion.xhtml?faces-redirect=true";
         } catch (BusinessLogicException ex) {
             Util.addErrorMessage(ex.getMessage(), null);
+            return null;
         }
-        return null;
     }
     
     public void editarCostas() {
@@ -193,7 +209,7 @@ public class DemandasMB implements Serializable {
     
     public void programarAbonos() {
         try {
-            servicios.programarAbonos(demandaProgramacion.getId(), numeroDeAbonos, utilizarCapitalPagare, interes, descuentoOfrecido);
+            servicios.programarAbonos(demandaProgramacion.getId(), numeroDeAbonos, utilizarCapitalPagare, interes, descuentoOfrecido.divide(new BigDecimal("100.00")));
             demandas = servicios.getDemandas();
             Util.addInfoMessage("Programación de abonos realizada satisfactoriamente.", null);
         } catch (BusinessLogicException ex) {
@@ -211,7 +227,7 @@ public class DemandasMB implements Serializable {
                 System.out.println(ultimaProgra.getInteres());
                 servicios.reprogramarAbonos(demandaReprogramacion.getId(), ultimaProgra.getNumeroDeAbonos(), ultimaProgra.getDescuentoOfrecido(), false, null, ultimaProgra.getInteres());
             }else{
-                servicios.reprogramarAbonos(demandaReprogramacion.getId(), numeroDeAbonos, descuentoOfrecido, recalcularTotalAPagar, utilizarCapitalPagare, interes);
+                servicios.reprogramarAbonos(demandaReprogramacion.getId(), numeroDeAbonos, descuentoOfrecido.divide(new BigDecimal("100.00")), recalcularTotalAPagar, utilizarCapitalPagare, interes);
             }
             
             demandas = servicios.getDemandas();
@@ -249,13 +265,17 @@ public class DemandasMB implements Serializable {
         montoSinDescuento = null;
     }
     
-    public void crearUsuario() {
+    public String crearUsuario() {
         try {
             servicios.crearUsuario(rut, password, nombreCompleto, rol);
             this.usuarios = servicios.getUsuarios();
-            Util.addInfoMessage("Usuario creado satisfactoriamente.", null);
+            msgs.info("Usuario creado satisfactoriamente.");
+            //Util.addInfoMessage("Usuario creado satisfactoriamente.", null);
+            return "/aplicacion.xhtml?faces-redirect=true";
         } catch (BusinessLogicException ex) {
-            Util.addErrorMessage(ex.getMessage(), null);
+            msgs.error(ex.getMessage());
+            //Util.addErrorMessage(ex.getMessage(), null);
+            return null;
         }
     }
     
@@ -284,6 +304,17 @@ public class DemandasMB implements Serializable {
             } catch (BusinessLogicException ex) {
                 Util.addErrorMessage(ex.getMessage(), null);
             }
+        return null;
+    }
+    
+    public String verHistorialAbonos(Usuario responsable) {
+        this.responsable = responsable;
+        this.abonos = this.servicios.getAbonosPorResponsable(responsable);
+        return null;
+    }
+    
+    public String cerrarHistorialAbonos() {
+        this.responsable = null;
         return null;
     }
 
@@ -493,6 +524,22 @@ public class DemandasMB implements Serializable {
 
     public void setPagosWeb(String pagosWeb) {
         this.pagosWeb = pagosWeb;
+    }
+
+    public List<Abono> getAbonos() {
+        return abonos;
+    }
+
+    public void setAbonos(List<Abono> abonos) {
+        this.abonos = abonos;
+    }
+
+    public Usuario getResponsable() {
+        return responsable;
+    }
+
+    public void setResponsable(Usuario responsable) {
+        this.responsable = responsable;
     }
     
     

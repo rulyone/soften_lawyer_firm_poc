@@ -6,11 +6,12 @@ package controladores;
 
 import java.io.Serializable;
 import javax.ejb.EJB;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.inject.Named;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import servicios.Servicios;
@@ -20,7 +21,7 @@ import servicios.Util;
  *
  * @author rulyone
  */
-@ManagedBean
+@Named
 @SessionScoped
 public class LoginMB implements Serializable {
 
